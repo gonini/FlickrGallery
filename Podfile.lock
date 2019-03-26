@@ -1,0 +1,47 @@
+PODS:
+  - ReactorKit (1.2.1):
+    - RxSwift (>= 4.0.0)
+  - RxAtomic (4.4.2)
+  - RxCocoa (4.4.2):
+    - RxSwift (>= 4.4.2, ~> 4.4)
+  - RxSwift (4.4.2):
+    - RxAtomic (>= 4.4.2, ~> 4.4)
+  - SwiftLint (0.31.0)
+  - Swinject (2.6.0)
+  - SwinjectStoryboard (2.1.0):
+    - Swinject (~> 2.5)
+  - Then (2.4.0)
+
+DEPENDENCIES:
+  - ReactorKit
+  - RxCocoa (~> 4.0)
+  - RxSwift (~> 4.0)
+  - SwiftLint
+  - Swinject
+  - SwinjectStoryboard
+  - Then
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - ReactorKit
+    - RxAtomic
+    - RxCocoa
+    - RxSwift
+    - SwiftLint
+    - Swinject
+    - SwinjectStoryboard
+    - Then
+
+SPEC CHECKSUMS:
+  ReactorKit: 8be57f0527ad1ac2963cd5c338274a46a01e57a3
+  RxAtomic: d00e97c10db88c6f08540e0bf2752fc5a2404167
+  RxCocoa: 477990dc3b4c3ff55fb0ac77e1cc06244e0aaec8
+  RxSwift: 74c29b693c8e42b0f64400e8b06564575742d649
+  SwiftLint: 7a0227733d786395817373b2d0ca799fd0093ff3
+  Swinject: 48a96cda93633cf2860697b4ce76ab5db9ebaca2
+  SwinjectStoryboard: 688f096033103e66ffcf6ca678211acd7d7be505
+  Then: 71866660c7af35a7343831f7668e7cd2b62ee0f2
+
+PODFILE CHECKSUM: a7a0ef4f0956b75aa59c413cc4bac41fc5544139
+
+COCOAPODS: 1.6.0.beta.2
