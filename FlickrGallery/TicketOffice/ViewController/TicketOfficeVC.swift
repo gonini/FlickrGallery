@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  TicketOfficeVC.swift
 //  FlickrGallery
 //
 //  Created by 장공의 on 26/03/2019.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class TicketOfficeVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
