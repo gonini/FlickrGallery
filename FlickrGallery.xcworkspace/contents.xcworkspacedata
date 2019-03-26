@@ -5,6 +5,12 @@
       location = "group:FlickrGallery.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:GalleryDomain/GalleryDomain.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:FlickerService/FlickerService.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>

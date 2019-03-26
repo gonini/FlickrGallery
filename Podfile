@@ -1,19 +1,43 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '10.0'
+platform :ios, '10.0'
 
-target 'FlickrGallery' do
-  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
-  use_frameworks!
+workspace 'FlickrGallery'
 
-  # Pods for FlickrGallery
+xcodeproj 'FlickrGallery.xcodeproj'
+xcodeproj 'GalleryDomain/GalleryDomain.xcodeproj'
+xcodeproj 'FlickerService/FlickerService.xcodeproj'
 
-pod 'SwiftLint'
+def flickr_gallery_pods
 pod 'Swinject'
 pod 'SwinjectStoryboard'
-pod 'RxSwift',    '~> 4.0'
 pod 'RxCocoa',    '~> 4.0'
-pod 'ReactorKit'
-pod 'Then'
-
 end
+
+def gallery_domain_pods
+pod 'ReactorKit'
+end
+
+def common_pods
+pod 'SwiftLint'
+pod 'RxSwift',    '~> 4.0'
+pod 'Then'
+end
+
+target 'FlickrGallery' do
+xcodeproj 'FlickrGallery.xcodeproj'
+flickr_gallery_pods
+common_pods
+end
+
+target 'GalleryDomain' do
+xcodeproj 'GalleryDomain/GalleryDomain.xcodeproj'
+gallery_domain_pods
+common_pods
+end
+
+target 'FlickerService' do
+xcodeproj 'FlickerService/FlickerService.xcodeproj'
+common_pods
+end
+
 
