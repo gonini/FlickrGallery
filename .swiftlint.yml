@@ -1,4 +1,10 @@
 # .swiftlint.yml
+
+included:
+- GalleryDomain/
+- FlickerService/
+- FlickrGallery/
+
 excluded:
 - FlickrGallery/Supporting Files/AppDelegate.swift
 - Pods

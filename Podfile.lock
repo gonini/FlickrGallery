@@ -10,7 +10,6 @@ PODS:
   - Swinject (2.6.0)
   - SwinjectStoryboard (2.1.0):
     - Swinject (~> 2.5)
-  - Then (2.4.0)
 
 DEPENDENCIES:
   - ReactorKit
@@ -19,7 +18,6 @@ DEPENDENCIES:
   - SwiftLint
   - Swinject
   - SwinjectStoryboard
-  - Then
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -30,7 +28,6 @@ SPEC REPOS:
     - SwiftLint
     - Swinject
     - SwinjectStoryboard
-    - Then
 
 SPEC CHECKSUMS:
   ReactorKit: 8be57f0527ad1ac2963cd5c338274a46a01e57a3
@@ -40,8 +37,7 @@ SPEC CHECKSUMS:
   SwiftLint: 7a0227733d786395817373b2d0ca799fd0093ff3
   Swinject: 48a96cda93633cf2860697b4ce76ab5db9ebaca2
   SwinjectStoryboard: 688f096033103e66ffcf6ca678211acd7d7be505
-  Then: 71866660c7af35a7343831f7668e7cd2b62ee0f2
 
-PODFILE CHECKSUM: 15de3c23cdc67929c3723ff8ed8b0fa05764fd61
+PODFILE CHECKSUM: d50ca28979f05504adcfa97c72df838e6818af75
 
 COCOAPODS: 1.6.0.beta.2
