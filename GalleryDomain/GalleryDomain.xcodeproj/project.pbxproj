@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		84C2A18BDC6D542907745772 /* Pods_GalleryDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05E759B4F59ED50D2F174856 /* Pods_GalleryDomain.framework */; };
 		99B929AF224A3E6800295D18 /* GalleryTicketReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B929AE224A3E6800295D18 /* GalleryTicketReactor.swift */; };
-		A531311C699F7D3B0590A469 /* libPods-GalleryDomain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 152DB533BE3268B42A5155F0 /* libPods-GalleryDomain.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -24,7 +24,7 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
-		152DB533BE3268B42A5155F0 /* libPods-GalleryDomain.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GalleryDomain.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		05E759B4F59ED50D2F174856 /* Pods_GalleryDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GalleryDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		44D8801048AA76F3F7B77D0D /* Pods-GalleryDomain.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryDomain.debug.xcconfig"; path = "Target Support Files/Pods-GalleryDomain/Pods-GalleryDomain.debug.xcconfig"; sourceTree = "<group>"; };
 		99B929A0224A3D7C00295D18 /* GalleryDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GalleryDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99B929A4224A3D7C00295D18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A531311C699F7D3B0590A469 /* libPods-GalleryDomain.a in Frameworks */,
+				84C2A18BDC6D542907745772 /* Pods_GalleryDomain.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,7 +57,7 @@
 		192751F87118EF63D56E1282 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				152DB533BE3268B42A5155F0 /* libPods-GalleryDomain.a */,
+				05E759B4F59ED50D2F174856 /* Pods_GalleryDomain.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -111,7 +111,6 @@
 				99B9299C224A3D7C00295D18 /* Sources */,
 				99B9299D224A3D7C00295D18 /* Frameworks */,
 				99B9299E224A3D7C00295D18 /* Resources */,
-				99AFD7A7224A485D00C377F0 /* ShellScript */,
 			);
 			buildRules = (
 				99AFD796224A41D700C377F0 /* PBXBuildRule */,
@@ -187,23 +186,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
-		};
-		99AFD7A7224A485D00C377F0 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "${PODS_ROOT}/SwiftLint/swiftlint\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -355,6 +337,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = GalleryDomain/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -383,6 +366,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = GalleryDomain/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
