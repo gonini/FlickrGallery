@@ -41,7 +41,7 @@ final public class GalleryTicketReactor: Reactor {
         case let .selectTickets(time):
             return .just(Mutation.setViewingTime(with: time))
         case .enterGallery:
-            return .empty()
+            return .just(Mutation.buyTickets)
         
         }
     }
