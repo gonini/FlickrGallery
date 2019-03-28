@@ -24,7 +24,7 @@ class TicketOfficeVC: UIViewController, StoryboardView {
     }
     
     func bind(reactor: GalleryTicketReactor) {
-        reactor.action.on(Event.next(Reactor.Action.enterTicketOffice))
+        reactor.action.on(.next(Reactor.Action.enterTicketOffice))
         
         reactor.state.map { $0.viewingTimeLimit }
             .map { (Float($0.minTime), Float($0.maxTime)) }
@@ -44,11 +44,17 @@ class TicketOfficeVC: UIViewController, StoryboardView {
             })
             .disposed(by: disposeBag)
         
-        viewingTimeSlider.rx.value
+        viewingTimeSlider.rx.timeValue
             .debounce(0.3, scheduler: MainScheduler.instance)
-            .map { TimeInterval(exactly: round($0))! }
             .map(Reactor.Action.selectTickets)
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+    }
+}
+
+extension Reactive where Base: UISlider {
+    var timeValue: ControlEvent<TimeInterval> {
+        let source = base.rx.value.map { TimeInterval(exactly: round($0))! }
+        return ControlEvent(events: source)
     }
 }
