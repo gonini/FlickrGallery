@@ -23,13 +23,10 @@ final public class GalleryTicketReactor: Reactor {
     
     public enum Action {
         case selectTickets(with: TimeInterval)
-        case enterGallery
     }
     
     public enum Mutation {
-        case initState
         case setViewingTime(with: TimeInterval)
-        case buyTickets
     }
     
     public struct State {
@@ -41,21 +38,15 @@ final public class GalleryTicketReactor: Reactor {
         switch action {
         case let .selectTickets(time):
             return .just(Mutation.setViewingTime(with: time))
-        case .enterGallery:
-            return .just(Mutation.buyTickets)
         }
     }
     
     public func reduce(state: State, mutation: Mutation) -> State {
+        var newState = state
         switch mutation {
-        case .initState:
-            return initialState
         case let .setViewingTime(with):
-            var newState = state
             newState.viewingTime = with
             return newState
-        case .buyTickets:
-            return state
         }
     }
 }

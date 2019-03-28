@@ -15,6 +15,7 @@ import RxCocoa
 
 class TicketOfficeVC: UIViewController, StoryboardView {
     var disposeBag = DisposeBag()
+    var lazyGalleryVC: LazyGalleryVC?
     
     @IBOutlet weak var viewingTimeSlider: UISlider!
     @IBOutlet weak var enterGalleryButton: UIButton!
@@ -29,6 +30,7 @@ class TicketOfficeVC: UIViewController, StoryboardView {
             .map { (Float($0.minTime), Float($0.maxTime)) }
             .bind(onNext: { [weak self] in
                 guard let `self` = self else { return }
+                
                 self.viewingTimeSlider.minimumValue = $0.0
                 self.viewingTimeSlider.maximumValue = $0.1
             })
@@ -40,15 +42,26 @@ class TicketOfficeVC: UIViewController, StoryboardView {
             .map { "작품 당 \($0)초 감상 티켓으로 입장" }
             .bind(onNext: { [weak self] in
                 guard let `self` = self else { return }
+                
                 self.enterGalleryButton.setTitle($0, for: .normal)
             })
             .disposed(by: disposeBag)
-        
+    
+        // Action
         viewingTimeSlider.rx.timeValue
             .debounce(0.3, scheduler: MainScheduler.instance)
             .map(Reactor.Action.selectTickets)
             .bind(to: reactor.action)
-            .disposed(by: disposeBag)
+        .disposed(by: disposeBag)
+        
+        enterGalleryButton.rx.tap
+            .debounce(0.3, scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] _ in
+                guard let `self` = self,
+                    let galleryVC = self.lazyGalleryVC?.galleryVC.instance else { return }
+                
+                self.navigationController?.pushViewController(galleryVC, animated: true)
+            }).disposed(by: disposeBag)
     }
 }
 

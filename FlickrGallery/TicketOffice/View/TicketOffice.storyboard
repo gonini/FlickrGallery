@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Nw8-H6-aIr">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="li4-CL-PYp">
     <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -19,13 +19,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="매표소에 오신걸 환영합니다" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Sem-kV-M4M" userLabel="welcomeLabel">
-                                <rect key="frame" x="10" y="109" width="355" height="32"/>
+                                <rect key="frame" x="10" y="108" width="355" height="32"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                 <color key="textColor" red="0.58072251080000004" green="0.066734083" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="LHJ-uo-AaK" userLabel="IntroduceLabel">
-                                <rect key="frame" x="10" y="171" width="355" height="100"/>
+                                <rect key="frame" x="10" y="150" width="355" height="100"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="BEE-ud-g0r"/>
                                     <constraint firstAttribute="height" constant="100" id="GLn-kt-IEw"/>
@@ -49,7 +49,7 @@
                                 </variation>
                             </label>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="1" maxValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="8fn-i4-NsB" userLabel="viewingTimeSlider">
-                                <rect key="frame" x="8" y="281" width="359" height="31"/>
+                                <rect key="frame" x="8" y="260" width="359" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="500" id="2Jb-H7-lzo">
                                         <variation key="widthClass=regular" constant="400"/>
@@ -82,7 +82,7 @@
                                 </variation>
                             </slider>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="슬라이딩 바를 사용하여 감상 시간을 결정" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ceN-tf-aAG" userLabel="settingviewingTimeGuide">
-                                <rect key="frame" x="67" y="321" width="241" height="18"/>
+                                <rect key="frame" x="67" y="300" width="241" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" red="0.58072251080000004" green="0.066734083" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -128,7 +128,7 @@
                             <constraint firstItem="3xv-vb-z83" firstAttribute="leading" secondItem="WBj-Ua-oOk" secondAttribute="leading" id="4qX-xM-ssM"/>
                             <constraint firstItem="3xv-vb-z83" firstAttribute="top" secondItem="w24-mH-N7p" secondAttribute="bottom" id="5Nf-hj-f3i"/>
                             <constraint firstItem="8fn-i4-NsB" firstAttribute="top" secondItem="LHJ-uo-AaK" secondAttribute="bottom" constant="10" id="9jV-Um-CQt"/>
-                            <constraint firstItem="LHJ-uo-AaK" firstAttribute="top" secondItem="Sem-kV-M4M" secondAttribute="bottom" constant="30" id="Ath-PY-0EO">
+                            <constraint firstItem="LHJ-uo-AaK" firstAttribute="top" secondItem="Sem-kV-M4M" secondAttribute="bottom" constant="10" id="Ath-PY-0EO">
                                 <variation key="heightClass=compact" constant="10"/>
                             </constraint>
                             <constraint firstItem="j4n-gg-mIq" firstAttribute="trailing" secondItem="Sem-kV-M4M" secondAttribute="trailing" constant="10" id="BkA-zX-b0D"/>
@@ -166,7 +166,7 @@
                             <constraint firstItem="j4n-gg-mIq" firstAttribute="trailing" secondItem="8fn-i4-NsB" secondAttribute="trailing" constant="10" id="stB-JZ-fMv"/>
                             <constraint firstItem="3xv-vb-z83" firstAttribute="top" secondItem="w24-mH-N7p" secondAttribute="bottom" id="w1r-jd-c0s"/>
                             <constraint firstItem="j4n-gg-mIq" firstAttribute="trailing" secondItem="Sem-kV-M4M" secondAttribute="trailing" constant="10" id="w5j-2x-9ZR"/>
-                            <constraint firstItem="Sem-kV-M4M" firstAttribute="top" secondItem="j4n-gg-mIq" secondAttribute="top" constant="65" id="xdk-qz-mnn">
+                            <constraint firstItem="Sem-kV-M4M" firstAttribute="top" secondItem="j4n-gg-mIq" secondAttribute="top" constant="20" id="xdk-qz-mnn">
                                 <variation key="heightClass=compact" constant="10"/>
                             </constraint>
                         </constraints>
@@ -257,6 +257,7 @@
                             </mask>
                         </variation>
                     </view>
+                    <navigationItem key="navigationItem" id="wK5-k6-OzW"/>
                     <connections>
                         <outlet property="enterGalleryButton" destination="w24-mH-N7p" id="c35-Jm-Uf7"/>
                         <outlet property="viewingTimeSlider" destination="8fn-i4-NsB" id="hSm-Su-oYY"/>
@@ -264,7 +265,25 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WMx-LW-UNz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-15.625" y="142.3828125"/>
+            <point key="canvasLocation" x="925.60000000000002" y="141.87192118226602"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="0TU-DT-W11">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="li4-CL-PYp" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="vSU-bD-PRE">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Nw8-H6-aIr" kind="relationship" relationship="rootViewController" id="LtN-n4-krd"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BUL-3p-ggJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-16.800000000000001" y="141.87192118226602"/>
         </scene>
     </scenes>
 </document>
