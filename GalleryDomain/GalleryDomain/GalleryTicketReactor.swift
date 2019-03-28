@@ -12,10 +12,16 @@ import ReactorKit
 import RxSwift
 
 final public class GalleryTicketReactor: Reactor {
-    public init() { }
+    public let initialState: State
+    
+    public init() {
+        self.initialState = State(
+            viewingTimeLimit: ViewingTimeRange.basic,
+            viewingTime: ViewingTimeRange.defaultMinTime
+        )
+    }
     
     public enum Action {
-        case enterTicketOffice
         case selectTickets(with: TimeInterval)
         case enterGallery
     }
@@ -31,18 +37,12 @@ final public class GalleryTicketReactor: Reactor {
         public var viewingTime: TimeInterval
     }
     
-    public let initialState = State(viewingTimeLimit: ViewingTimeRange.basic,
-                             viewingTime: ViewingTimeRange.defaultMinTime)
-    
     public func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .enterTicketOffice:
-            return .empty()
         case let .selectTickets(time):
             return .just(Mutation.setViewingTime(with: time))
         case .enterGallery:
             return .just(Mutation.buyTickets)
-        
         }
     }
     
@@ -60,9 +60,15 @@ final public class GalleryTicketReactor: Reactor {
     }
 }
 
-public struct ViewingTimeRange {
+public struct ViewingTimeRange: Equatable {
     public let minTime: TimeInterval
     public let maxTime: TimeInterval
+    
+    public static func == (lhs: ViewingTimeRange,
+                           rhs: ViewingTimeRange) -> Bool {
+        return lhs.minTime == rhs.minTime &&
+            lhs.maxTime == rhs.maxTime
+    }
 }
 
 fileprivate extension ViewingTimeRange {

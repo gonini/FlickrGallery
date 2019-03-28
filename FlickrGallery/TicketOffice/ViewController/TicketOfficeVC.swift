@@ -24,9 +24,8 @@ class TicketOfficeVC: UIViewController, StoryboardView {
     }
     
     func bind(reactor: GalleryTicketReactor) {
-        reactor.action.on(.next(Reactor.Action.enterTicketOffice))
-        
         reactor.state.map { $0.viewingTimeLimit }
+            .distinctUntilChanged()
             .map { (Float($0.minTime), Float($0.maxTime)) }
             .bind(onNext: { [weak self] in
                 guard let `self` = self else { return }
@@ -36,6 +35,7 @@ class TicketOfficeVC: UIViewController, StoryboardView {
             .disposed(by: disposeBag)
         
         reactor.state.map { $0.viewingTime }
+            .distinctUntilChanged()
             .map { Int(exactly: $0)! }
             .map { "작품 당 \($0)초 감상 티켓으로 입장" }
             .bind(onNext: { [weak self] in
