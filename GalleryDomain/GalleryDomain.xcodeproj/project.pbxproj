@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		84C2A18BDC6D542907745772 /* Pods_GalleryDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05E759B4F59ED50D2F174856 /* Pods_GalleryDomain.framework */; };
-		99B929AF224A3E6800295D18 /* GalleryTicketReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B929AE224A3E6800295D18 /* GalleryTicketReactor.swift */; };
+		99842F1C224DD398006C7D9F /* GalleryReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F1B224DD398006C7D9F /* GalleryReactor.swift */; };
+		99B929AF224A3E6800295D18 /* TicketOfficeReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B929AE224A3E6800295D18 /* TicketOfficeReactor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -26,9 +27,10 @@
 /* Begin PBXFileReference section */
 		05E759B4F59ED50D2F174856 /* Pods_GalleryDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GalleryDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		44D8801048AA76F3F7B77D0D /* Pods-GalleryDomain.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryDomain.debug.xcconfig"; path = "Target Support Files/Pods-GalleryDomain/Pods-GalleryDomain.debug.xcconfig"; sourceTree = "<group>"; };
+		99842F1B224DD398006C7D9F /* GalleryReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryReactor.swift; sourceTree = "<group>"; };
 		99B929A0224A3D7C00295D18 /* GalleryDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GalleryDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99B929A4224A3D7C00295D18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		99B929AE224A3E6800295D18 /* GalleryTicketReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryTicketReactor.swift; sourceTree = "<group>"; };
+		99B929AE224A3E6800295D18 /* TicketOfficeReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketOfficeReactor.swift; sourceTree = "<group>"; };
 		EA5E2A894DD739CAC8AF14DF /* Pods-GalleryDomain.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryDomain.release.xcconfig"; path = "Target Support Files/Pods-GalleryDomain/Pods-GalleryDomain.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -62,6 +64,22 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		99842F19224DD313006C7D9F /* TicketOffice */ = {
+			isa = PBXGroup;
+			children = (
+				99B929AE224A3E6800295D18 /* TicketOfficeReactor.swift */,
+			);
+			path = TicketOffice;
+			sourceTree = "<group>";
+		};
+		99842F1A224DD324006C7D9F /* Gallery */ = {
+			isa = PBXGroup;
+			children = (
+				99842F1B224DD398006C7D9F /* GalleryReactor.swift */,
+			);
+			path = Gallery;
+			sourceTree = "<group>";
+		};
 		99B92996224A3D7C00295D18 = {
 			isa = PBXGroup;
 			children = (
@@ -83,8 +101,9 @@
 		99B929A2224A3D7C00295D18 /* GalleryDomain */ = {
 			isa = PBXGroup;
 			children = (
+				99842F19224DD313006C7D9F /* TicketOffice */,
+				99842F1A224DD324006C7D9F /* Gallery */,
 				99B929A4224A3D7C00295D18 /* Info.plist */,
-				99B929AE224A3E6800295D18 /* GalleryTicketReactor.swift */,
 			);
 			path = GalleryDomain;
 			sourceTree = "<group>";
@@ -194,7 +213,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				99B929AF224A3E6800295D18 /* GalleryTicketReactor.swift in Sources */,
+				99B929AF224A3E6800295D18 /* TicketOfficeReactor.swift in Sources */,
+				99842F1C224DD398006C7D9F /* GalleryReactor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

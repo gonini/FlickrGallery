@@ -8,8 +8,19 @@
 
 import UIKit
 
-final class GalleryVC: UIViewController {
+import ReactorKit
+import RxSwift
+import GalleryDomain
+
+final class GalleryVC: UIViewController, StoryboardView {
+    var disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+    }
+    
+    func bind(reactor: GalleryReactor) {
+        
     }
 }

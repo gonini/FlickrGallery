@@ -15,7 +15,7 @@ import RxCocoa
 
 class TicketOfficeVC: UIViewController, StoryboardView {
     var disposeBag = DisposeBag()
-    var lazyGalleryVC: LazyGalleryVC?
+    var lazyGalleryVC: GalleryVCLazyHolder?
     
     @IBOutlet weak var viewingTimeSlider: UISlider!
     @IBOutlet weak var enterGalleryButton: UIButton!
@@ -24,7 +24,7 @@ class TicketOfficeVC: UIViewController, StoryboardView {
         super.viewDidLoad()
     }
     
-    func bind(reactor: GalleryTicketReactor) {
+    func bind(reactor: TicketOfficeReactor) {
         reactor.state.map { $0.viewingTimeLimit }
             .distinctUntilChanged()
             .map { (Float($0.minTime), Float($0.maxTime)) }
@@ -47,7 +47,6 @@ class TicketOfficeVC: UIViewController, StoryboardView {
             })
             .disposed(by: disposeBag)
     
-        // Action
         viewingTimeSlider.rx.timeValue
             .debounce(0.3, scheduler: MainScheduler.instance)
             .map(Reactor.Action.selectTickets)

@@ -12,7 +12,7 @@ import GalleryDomain
 import Swinject
 import SwinjectStoryboard
 
-struct LazyGalleryVC {
+struct GalleryVCLazyHolder {
     let galleryVC: Lazy<GalleryVC>
 }
 
@@ -20,16 +20,18 @@ extension SwinjectStoryboard {
     @objc class func setup() {
         defaultContainer.register(GalleryVC.self) { _ in
             let storyboard = UIStoryboard(name: "Gallery", bundle: nil)
-            return storyboard.instantiateViewController(withIdentifier: "GalleryVC") as! GalleryVC
+            let ret = storyboard.instantiateViewController(withIdentifier: "GalleryVC") as! GalleryVC
+            ret.reactor = GalleryReactor()
+            return ret
         }
         
-        defaultContainer.register(LazyGalleryVC.self) {
-            return LazyGalleryVC(galleryVC: $0.resolve(Lazy<GalleryVC>.self)!)
+        defaultContainer.register(GalleryVCLazyHolder.self) {
+            return GalleryVCLazyHolder(galleryVC: $0.resolve(Lazy<GalleryVC>.self)!)
         }
         
         defaultContainer.storyboardInitCompleted(TicketOfficeVC.self) { c, r in
-            r.reactor = GalleryTicketReactor()
-            r.lazyGalleryVC = c.resolve(LazyGalleryVC.self)
+            r.reactor = TicketOfficeReactor()
+            r.lazyGalleryVC = c.resolve(GalleryVCLazyHolder.self)
         }
     }
 }

@@ -81,26 +81,10 @@
 		99AFD7CA224A586500C377F0 /* TicketOffice */ = {
 			isa = PBXGroup;
 			children = (
-				99AFD7CC224A58B300C377F0 /* View */,
-				99AFD7CB224A587400C377F0 /* ViewController */,
-			);
-			path = TicketOffice;
-			sourceTree = "<group>";
-		};
-		99AFD7CB224A587400C377F0 /* ViewController */ = {
-			isa = PBXGroup;
-			children = (
+				99AFD7CD224A58D000C377F0 /* TicketOffice.storyboard */,
 				99B9297F224A349200295D18 /* TicketOfficeVC.swift */,
 			);
-			path = ViewController;
-			sourceTree = "<group>";
-		};
-		99AFD7CC224A58B300C377F0 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				99AFD7CD224A58D000C377F0 /* TicketOffice.storyboard */,
-			);
-			path = View;
+			path = TicketOffice;
 			sourceTree = "<group>";
 		};
 		99B92971224A349200295D18 = {
@@ -148,26 +132,10 @@
 		99D26343224CE3EF00B94330 /* Gallery */ = {
 			isa = PBXGroup;
 			children = (
-				99D26344224CE3F800B94330 /* VIew */,
-				99D26345224CE3FB00B94330 /* ViewController */,
-			);
-			path = Gallery;
-			sourceTree = "<group>";
-		};
-		99D26344224CE3F800B94330 /* VIew */ = {
-			isa = PBXGroup;
-			children = (
 				99842F17224CE49C006C7D9F /* Gallery.storyboard */,
-			);
-			path = VIew;
-			sourceTree = "<group>";
-		};
-		99D26345224CE3FB00B94330 /* ViewController */ = {
-			isa = PBXGroup;
-			children = (
 				99D26346224CE45200B94330 /* GalleryVC.swift */,
 			);
-			path = ViewController;
+			path = Gallery;
 			sourceTree = "<group>";
 		};
 		E73C50E26DE56B1199EED956 /* Frameworks */ = {

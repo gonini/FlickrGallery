@@ -1,7 +1,6 @@
 //
-//  GalleryTicketReactor.swift
+//  TicketOfficeReactor.swift
 //  GalleryDomain
-//asdnmaksjdnaksdblahsjkbdfahjskdfbashkljdfgbkasdajhsdfvkasgf
 //  Created by 장공의 on 26/03/2019.
 //  Copyright © 2019 gonini. All rights reserved.
 //
@@ -11,7 +10,7 @@ import Foundation
 import ReactorKit
 import RxSwift
 
-final public class GalleryTicketReactor: Reactor {
+final public class TicketOfficeReactor: Reactor {
     public let initialState: State
     
     public init() {
