@@ -139,6 +139,10 @@
                             </mask>
                         </variation>
                     </view>
+                    <connections>
+                        <outlet property="viewingTimeLabel" destination="R59-Ez-cFY" id="IoU-aI-kOk"/>
+                        <outlet property="viewingTimeSlider" destination="2ah-W7-lpX" id="3h0-fw-U0E"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AIN-Zf-SC2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

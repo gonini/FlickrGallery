@@ -80,6 +80,13 @@
 			path = Gallery;
 			sourceTree = "<group>";
 		};
+		99842F1D224F3495006C7D9F /* Service */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		99B92996224A3D7C00295D18 = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +110,7 @@
 			children = (
 				99842F19224DD313006C7D9F /* TicketOffice */,
 				99842F1A224DD324006C7D9F /* Gallery */,
+				99842F1D224F3495006C7D9F /* Service */,
 				99B929A4224A3D7C00295D18 /* Info.plist */,
 			);
 			path = GalleryDomain;

@@ -9,6 +9,7 @@ project 'GalleryDomain/GalleryDomain.xcodeproj'
 project 'FlickerService/FlickerService.xcodeproj'
 
 def flickr_gallery_pods
+pod 'RxViewController'
 pod 'Swinject'
 pod 'SwinjectStoryboard'
 pod 'RxCocoa',    '~> 4.0'

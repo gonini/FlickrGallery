@@ -9,6 +9,7 @@
 import UIKit
 
 import GalleryDomain
+import RxSwift
 import Swinject
 import SwinjectStoryboard
 
@@ -18,19 +19,31 @@ struct GalleryVCLazyHolder {
 
 extension SwinjectStoryboard {
     @objc class func setup() {
-        defaultContainer.register(GalleryVC.self) { _ in
+        defaultContainer.register(ReplaySubject<ViewingTime>.self) { _ in
+            return .create(bufferSize: 1)
+        }.inObjectScope(.container)
+        
+        defaultContainer.register(TicketOfficeReactor.self) { c in
+            return .init(viewingTimeStream: c.resolve(ReplaySubject<ViewingTime>.self)!)
+        }
+     
+        defaultContainer.register(GalleryReactor.self) { c in
+            return .init(viewingTimeStream: c.resolve(ReplaySubject<ViewingTime>.self)!)
+        }
+     
+        defaultContainer.register(GalleryVC.self) { c in
             let storyboard = UIStoryboard(name: "Gallery", bundle: nil)
             let ret = storyboard.instantiateViewController(withIdentifier: "GalleryVC") as! GalleryVC
-            ret.reactor = GalleryReactor()
+            ret.reactor = c.resolve(GalleryReactor.self)
             return ret
         }
         
         defaultContainer.register(GalleryVCLazyHolder.self) {
-            return GalleryVCLazyHolder(galleryVC: $0.resolve(Lazy<GalleryVC>.self)!)
+            return .init(galleryVC: $0.resolve(Lazy<GalleryVC>.self)!)
         }
         
         defaultContainer.storyboardInitCompleted(TicketOfficeVC.self) { c, r in
-            r.reactor = TicketOfficeReactor()
+            r.reactor = c.resolve(TicketOfficeReactor.self)
             r.lazyGalleryVC = c.resolve(GalleryVCLazyHolder.self)
         }
     }

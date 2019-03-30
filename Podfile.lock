@@ -6,6 +6,9 @@ PODS:
     - RxSwift (>= 4.4.2, ~> 4.4)
   - RxSwift (4.4.2):
     - RxAtomic (>= 4.4.2, ~> 4.4)
+  - RxViewController (0.4.1):
+    - RxCocoa (>= 4.0.0)
+    - RxSwift (>= 4.0.0)
   - SwiftLint (0.31.0)
   - Swinject (2.6.0)
   - SwinjectStoryboard (2.1.0):
@@ -15,6 +18,7 @@ DEPENDENCIES:
   - ReactorKit
   - RxCocoa (~> 4.0)
   - RxSwift (~> 4.0)
+  - RxViewController
   - SwiftLint
   - Swinject
   - SwinjectStoryboard
@@ -25,6 +29,7 @@ SPEC REPOS:
     - RxAtomic
     - RxCocoa
     - RxSwift
+    - RxViewController
     - SwiftLint
     - Swinject
     - SwinjectStoryboard
@@ -34,10 +39,11 @@ SPEC CHECKSUMS:
   RxAtomic: d00e97c10db88c6f08540e0bf2752fc5a2404167
   RxCocoa: 477990dc3b4c3ff55fb0ac77e1cc06244e0aaec8
   RxSwift: 74c29b693c8e42b0f64400e8b06564575742d649
+  RxViewController: e93e7c233d5b5b62c32231d69726d55f54081bc6
   SwiftLint: 7a0227733d786395817373b2d0ca799fd0093ff3
   Swinject: 48a96cda93633cf2860697b4ce76ab5db9ebaca2
   SwinjectStoryboard: 688f096033103e66ffcf6ca678211acd7d7be505
 
-PODFILE CHECKSUM: d50ca28979f05504adcfa97c72df838e6818af75
+PODFILE CHECKSUM: c22043f4ff3c7260ab5cab0d7618f02e95a9aa86
 
 COCOAPODS: 1.6.0.beta.2

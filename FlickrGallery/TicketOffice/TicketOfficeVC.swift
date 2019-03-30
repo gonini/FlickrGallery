@@ -9,9 +9,10 @@
 import UIKit
 
 import GalleryDomain
-import ReactorKit
+import RxViewController
 import RxSwift
 import RxCocoa
+import ReactorKit
 
 class TicketOfficeVC: UIViewController, StoryboardView {
     var disposeBag = DisposeBag()
@@ -36,37 +37,54 @@ class TicketOfficeVC: UIViewController, StoryboardView {
             })
             .disposed(by: disposeBag)
         
-        reactor.state.map { $0.viewingTime }
+        let propagetedViewingTime = reactor.state.map { $0.propagetedViewingTime }
             .distinctUntilChanged()
-            .map { Int(exactly: $0)! }
-            .map { "작품 당 \($0)초 감상 티켓으로 입장" }
+        
+        propagetedViewingTime
             .bind(onNext: { [weak self] in
                 guard let `self` = self else { return }
-                
-                self.enterGalleryButton.setTitle($0, for: .normal)
+                self.viewingTimeSlider.value = Float($0)
             })
             .disposed(by: disposeBag)
-    
-        viewingTimeSlider.rx.timeValue
+        
+        // Action
+        let viewingTime = viewingTimeSlider.rx.timeValue
             .debounce(0.3, scheduler: MainScheduler.instance)
+    
+        viewingTime
             .map(Reactor.Action.selectTickets)
             .bind(to: reactor.action)
         .disposed(by: disposeBag)
         
-        enterGalleryButton.rx.tap
+        Observable<ViewingTime>.merge(viewingTime, propagetedViewingTime)
+            .map { "작품 당 \(Int($0))초 감상 티켓으로 입장" }
+            .subscribe { [weak self] in
+                guard let `self` = self, let title = $0.element else { return }
+                self.enterGalleryButton.setTitle(title, for: .normal)
+        }.disposed(by: disposeBag)
+        
+        let galleryButtonTap = enterGalleryButton.rx.tap
             .debounce(0.3, scheduler: MainScheduler.instance)
+        
+        galleryButtonTap
+            .map { Reactor.Action.useTickets }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        galleryButtonTap
             .subscribe(onNext: { [weak self] _ in
                 guard let `self` = self,
                     let galleryVC = self.lazyGalleryVC?.galleryVC.instance else { return }
                 
-                self.navigationController?.pushViewController(galleryVC, animated: true)
-            }).disposed(by: disposeBag)
+ self.navigationController?.pushViewController(galleryVC, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
 }
 
 extension Reactive where Base: UISlider {
-    var timeValue: ControlEvent<TimeInterval> {
-        let source = base.rx.value.map { TimeInterval(exactly: round($0))! }
+    var timeValue: ControlEvent<ViewingTime> {
+        let source = base.rx.value.map { ViewingTime(exactly: round($0))! }
         return ControlEvent(events: source)
     }
 }
