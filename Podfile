@@ -22,6 +22,8 @@ end
 def common_pods
 pod 'SwiftLint'
 pod 'RxSwift',    '~> 4.0'
+pod 'ObjectMapper', '~> 3.4'
+pod 'RxAlamofire'
 end
 
 target 'FlickrGallery' do

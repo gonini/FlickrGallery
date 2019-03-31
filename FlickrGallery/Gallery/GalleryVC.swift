@@ -51,8 +51,7 @@ final class GalleryVC: UIViewController, StoryboardView {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        Observable<ViewingTime>.merge(viewingTime, propagetedViewingTime)
-            .map { "현재 감상 시간 \(Int($0))초" }
+        viewingTime.map { "현재 감상 시간 \(Int($0))초" }
             .subscribe { [weak self] in
                 guard let `self` = self, let title = $0.element else { return }
                 self.viewingTimeLabel.text = title

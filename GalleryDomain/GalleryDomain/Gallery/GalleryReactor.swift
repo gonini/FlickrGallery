@@ -14,20 +14,36 @@ import RxSwift
 final public class GalleryReactor: Reactor {
     public let initialState: State
     private let viewingTimeStream: ReplaySubject<ViewingTime>
+    private let galleyImageStream: Observable<Data>? = nil
+    var disposeBag = DisposeBag()
     
     public init(viewingTimeStream: ReplaySubject<ViewingTime>) {
         initialState = State(
             viewingTimeLimit: ViewingTimeRange.basic,
             propagetedViewingTime: ViewingTimeRange.defaultMinTime,
-            viewingTime: ViewingTimeRange.defaultMinTime
+            viewingTime: ViewingTimeRange.defaultMinTime,
+            artImage: nil
         )
         self.viewingTimeStream = viewingTimeStream
+        
+        var model = GalleryFeedModel()
+        
+        model.galleryFeeds
+        .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            .subscribe(onNext: { (feeds) in
+                _ = "A"
+            }, onError: { (error) in
+                _ = "A"
+            })
+        .disposed(by: disposeBag)
+        
     }
     
     public struct State {
         public var viewingTimeLimit: ViewingTimeRange
         public var propagetedViewingTime: ViewingTime
         public var viewingTime: ViewingTime
+        public var artImage: Data?
     }
     
     public enum Action {
@@ -41,15 +57,7 @@ final public class GalleryReactor: Reactor {
     }
     
     public func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
-        let propagated = viewingTimeStream
-            .observeOn(MainScheduler.asyncInstance)
-            .distinctUntilChanged()
-            .flatMap { time in return Observable<Mutation>.concat([
-                .just(Mutation.setPropagatedTime(with: time)),
-                .just(Mutation.setViewingTime(with: time))
-                ])}
-        
-        return .merge(mutation, propagated)
+        return .merge(mutation, propagatedTime())
     }
     
     public func mutate(action: Action) -> Observable<Mutation> {
@@ -76,5 +84,15 @@ final public class GalleryReactor: Reactor {
             viewingTimeStream.onNext(newState.viewingTime)
             return newState
         }
+    }
+    
+    private func propagatedTime() -> Observable<Mutation> {
+        return viewingTimeStream
+            .observeOn(MainScheduler.asyncInstance)
+            .distinctUntilChanged()
+            .flatMap { time in return Observable<Mutation>.concat([
+                .just(Mutation.setPropagatedTime(with: time)),
+                .just(Mutation.setViewingTime(with: time))
+                ])}
     }
 }
