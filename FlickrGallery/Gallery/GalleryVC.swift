@@ -24,13 +24,13 @@ final class GalleryVC: UIViewController, StoryboardView {
     }
     
     func bind(reactor: GalleryReactor) {
-        reactor.state.map { $0.artImage }
-            .flatMap { Observable.from(optional: $0) }
-            .distinctUntilChanged()
+        reactor.state.map { $0.galleyImage }
+            .distinctUntilChanged { $0 == $1 }
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { [weak self] data in
-                guard let `self` = self else { return }
-                self.artImageView.load(data: data)
+            .subscribe(onNext: { [weak self] in
+                guard let `self` = self,
+                    let image = $0.image else { return }
+                self.artImageView.load(data: image, duration: $0.imswpAnmtnTime)
             }).disposed(by: disposeBag)
         
         reactor.state.map { $0.viewingTimeLimit }
@@ -77,13 +77,33 @@ final class GalleryVC: UIViewController, StoryboardView {
 }
 
 extension UIImageView {
-    func load(data: Data) {
-        DispatchQueue.global().async { [weak self] in
-            if let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self?.image = image
+    func load(data: Data, duration: TimeInterval) {
+        DispatchQueue.global().async {
+            guard let image = UIImage(data: data) else { return  }
+            DispatchQueue.main.async { [weak self] in
+                guard let `self` = self else { return }
+                self.fadeOut(duration) { _ in
+                    self.image = image
+                    self.fadeIn(duration)
                 }
             }
         }
     }
+    
+    // https://stackoverflow.com/questions/28288476/fade-in-and-fade-out-in-animation-swift
+    func fadeIn(_ duration: TimeInterval = 0.5,
+                delay: TimeInterval = 0.0,
+                completion: @escaping ((Bool) -> Void) = {(finished: Bool) -> Void in}) {
+        UIView.animate(withDuration: duration, delay: delay, options: UIView.AnimationOptions.curveEaseIn, animations: {
+            self.alpha = 1.0
+        }, completion: completion)  }
+    
+    func fadeOut(_ duration: TimeInterval = 0.5,
+                 delay: TimeInterval = 1.0,
+                 completion: @escaping (Bool) -> Void = {(finished: Bool) -> Void in}) {
+        UIView.animate(withDuration: duration, delay: delay, options: UIView.AnimationOptions.curveEaseIn, animations: {
+            self.alpha = 0.3
+        }, completion: completion)
+    }
+        
 }

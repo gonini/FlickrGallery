@@ -13,11 +13,12 @@ import RxSwift
 
 final public class GalleryReactor: Reactor {
     private static let id = "GalleryReactor"
+    private static let defaultAnmtnTime = 1.0
     public let initialState: State
     
     private let viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>
-    private let galleyImageStream = BehaviorSubject<Data?>(value: nil)
-    private let galleyImageQueue: SynchronizedArray<URL> = .init()
+    private let galleyImageStream = BehaviorSubject<GalleyImage?>(value: nil)
+    private let galleyFeed: SynchronizedArray<URL> = .init()
     private let downloadService: FileDownloadService
     
     private var timerDisposable: Disposable?
@@ -28,7 +29,7 @@ final public class GalleryReactor: Reactor {
             viewingTimeLimit: ViewingTimeRange.basic,
             propagetedViewingTime: nil,
             viewingTime: ViewingTimeRange.defaultMinTime,
-            artImage: nil
+            galleyImage: .init(image: nil, imswpAnmtnTime: 0)
         )
         
         let defaultViewingTime =
@@ -42,7 +43,7 @@ final public class GalleryReactor: Reactor {
         self.downloadService = downloadService
         
         galleryImageUrls()
-            .subscribe(onNext: { self.galleyImageQueue.append($0) })
+            .subscribe(onNext: { self.galleyFeed.append($0) })
             .disposed(by: disposeBag)
     }
     
@@ -50,7 +51,7 @@ final public class GalleryReactor: Reactor {
         public var viewingTimeLimit: ViewingTimeRange
         public var propagetedViewingTime: ViewingTime?
         public var viewingTime: ViewingTime
-        public var artImage: Data?
+        public var galleyImage: GalleyImage
     }
     
     public enum Action {
@@ -61,7 +62,7 @@ final public class GalleryReactor: Reactor {
         case setViewingTime(with: ViewingTime)
         case propagateViewingTime
         case setPropagatedTime(with: ViewingTime)
-        case setArtImage(with: Data)
+        case setArtImage(with: GalleyImage)
         case applyImageSlideTime
     }
     
@@ -100,10 +101,11 @@ final public class GalleryReactor: Reactor {
             )
             return newState
         case let .setArtImage(with):
-            newState.artImage = with
+            newState.galleyImage = with
             return newState
         case .applyImageSlideTime:
-            chnageViewingTime(newState.viewingTime)
+            chnageViewingTime(newState.viewingTime,
+                              anmtnTime: GalleryReactor.defaultAnmtnTime)
             return newState
         }
     }
@@ -131,21 +133,35 @@ final public class GalleryReactor: Reactor {
             .map { URL(string: $0.imageUrl)! }
     }
     
-    private func chnageViewingTime(_ with: TimeInterval) {
+    private func chnageViewingTime(_ with: TimeInterval, anmtnTime: TimeInterval) {
         timerDisposable?.dispose()
-        timerDisposable = Observable<Int>.interval(with, scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
-            .filter { _ in !self.galleyImageQueue.isEmpty }
+        timerDisposable = Observable<Int>.interval(with + anmtnTime,
+                                                   scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
+            .startWith(0)
+            .filter { _ in !self.galleyFeed.isEmpty }
             .map { _ in
-                let ret = self.galleyImageQueue.first
-                self.galleyImageQueue.removeFirst()
+                let ret = self.galleyFeed.first
+                self.galleyFeed.removeFirst()
                 return ret
             }
             .flatMap { Observable.from(optional: $0) }
+            .debug()
             .flatMap(downloadService.load)
-            .subscribe(onNext: { [weak self] data in
+            .map { GalleyImage(image: $0, imswpAnmtnTime: anmtnTime) }
+            .subscribe(onNext: { [weak self] in
                 guard let `self` = self else { return }
-                self.galleyImageStream.onNext(data)
+                self.galleyImageStream.onNext($0)
             })
     }
+}
+
+public struct GalleyImage {
+    public var image: Data?
+    public var imswpAnmtnTime: TimeInterval
     
+    public static func == (lhs: GalleyImage,
+                           rhs: GalleyImage) -> Bool {
+        return lhs.image == rhs.image &&
+            lhs.imswpAnmtnTime == rhs.imswpAnmtnTime
+    }
 }
