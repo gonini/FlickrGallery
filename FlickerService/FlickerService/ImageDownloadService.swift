@@ -16,9 +16,10 @@ public struct ImageDownloadService: FileDownloadService {
     
     public func load(url: URL) -> Observable<Data> {
         return RxAlamofire.request(.get, url)
-        .responseData()
-        .catchError(Observable.error)
-        .filter { (res, _) -> Bool in res.statusCode == 200 }
-        .map { (_, data) -> Data in return data }
+            .responseData()
+            .filter { (response, _) -> Bool in response.statusCode == 200 }
+            .retry(1)
+            .catchError(Observable.error)
+            .map { $0.1 }
     }
 }

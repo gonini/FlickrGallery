@@ -63,14 +63,14 @@ public struct FlickerFeedService: GalleryFeedService {
             .request(.get, FlickerFeedService.flickerFeedUrl,
                      parameters: FlickerFeedService.parm,
                      encoding: URLEncoding(destination: .queryString), headers: headers)
-            .validate(statusCode: 200...200)
+            .debug()
             .responseString()
+            .filter { (response, _) -> Bool in response.statusCode == 200 }
             .catchError(Observable.error)
             .map { (response, result) -> String in
                 self.updateIMS(response)
                 return result }
             .map { $0.removeBothEnds() }
-            .debug()
             .map { result -> [String: Any] in
                 guard let data = result.data(using: .utf8) else { return .init() }
                 guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
