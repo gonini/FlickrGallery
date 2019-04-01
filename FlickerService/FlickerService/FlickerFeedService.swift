@@ -63,7 +63,6 @@ public struct FlickerFeedService: GalleryFeedService {
             .request(.get, FlickerFeedService.flickerFeedUrl,
                      parameters: FlickerFeedService.parm,
                      encoding: URLEncoding(destination: .queryString), headers: headers)
-            .debug()
             .responseString()
             .filter { (response, _) -> Bool in response.statusCode == 200 }
             .catchError(Observable.error)

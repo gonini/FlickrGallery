@@ -11,8 +11,10 @@ import Foundation
 import ReactorKit
 import RxSwift
 
-final public class GalleryReactor: Reactor {
+final public class GalleryReactor: Reactor, ViewingTimeStream {
     public let initialState: State
+    
+    var viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>?
     
     private static let id = "GalleryReactor"
     private static let galleryImageFadeTime = 1.0
@@ -23,7 +25,6 @@ final public class GalleryReactor: Reactor {
     private let downloadService: FileDownloadService
     
     private var firstImageScheduler: Observable<Int> = .empty()
-    private var viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>?
     private var timerDisposable: Disposable?
     private var disposeBag = DisposeBag()
     
@@ -32,9 +33,11 @@ final public class GalleryReactor: Reactor {
                 feedService: GalleryFeedService) {
         self.downloadService = downloadService
         initialState = State.initialState
-        setUpViewingTimeStream(globalStream)
         observeFeeds(feedService)
         setUpScheduler()
+        setUpViewingTimeStream(globalStream,
+                               itemId: GalleryReactor.id,
+                               initialViewingTime: initialState.viewingTime)
     }
     
     public struct State {
@@ -84,7 +87,8 @@ final public class GalleryReactor: Reactor {
             newState.propagetedViewingTime = with
             return newState
         case .propagateViewingTime:
-            self.propagateViewingTime(with: newState.viewingTime)
+            propagateViewingTime(itemId: GalleryReactor.id,
+                                 with: newState.viewingTime)
             return newState
         case let .setArtImage(with):
             newState.galleyImage = with
@@ -98,17 +102,14 @@ final public class GalleryReactor: Reactor {
 }
 
 fileprivate extension GalleryReactor {
-    private func setUpViewingTimeStream(_ globalStream: GlobalStreamService) {
-        self.viewingTimeStream = globalStream.getAndCreate(
-            id: StreamId.vieingTime,
-            defaultValue: .init(id: GalleryReactor.id, item: initialState.viewingTime))
-    }
-    
     private func observeFeeds(_ feedService: GalleryFeedService) {
         return feedService.observeFeeds(refreshInterval: GalleryReactor.feedRefreshInterval)
             .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .map { URL(string: $0.imageUrl)! }
-            .subscribe(onNext: { self.feedBuffer.append($0) })
+            .subscribe(onNext: { self.feedBuffer.append($0) },
+                       onError: { _ in
+                        // 에러 처리하기
+            })
             .disposed(by: disposeBag)
     }
     
@@ -155,14 +156,9 @@ fileprivate extension GalleryReactor {
             .subscribe(onNext: { [weak self] in
                 guard let `self` = self else { return }
                 self.imageStream.onNext($0)
+                }, onError: { _ in
+                    // 에러 처리하기
             })
-    }
-    
-    private func propagateViewingTime(with: ViewingTime) {
-        viewingTimeStream?.onNext(
-            .init(id: GalleryReactor.id,
-                  item: with)
-        )
     }
 }
 

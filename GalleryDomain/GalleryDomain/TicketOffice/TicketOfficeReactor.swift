@@ -10,14 +10,12 @@ import Foundation
 import ReactorKit
 import RxSwift
 
-public typealias ViewingTime = TimeInterval
-
-final public class TicketOfficeReactor: Reactor {
+final public class TicketOfficeReactor: Reactor, ViewingTimeStream {
     public let initialState: State
     
-    private static let id = "TicketOfficeReactor"
+    var viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>?
     
-    private var viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>?
+    private static let id = "TicketOfficeReactor"
     
     private var networkStatus: NetworkStatusService
     private var disposeBag = DisposeBag()
@@ -25,7 +23,9 @@ final public class TicketOfficeReactor: Reactor {
     public init(globalStream: GlobalStreamService, networkStatus: NetworkStatusService) {
         initialState = State.initialState
         self.networkStatus = networkStatus
-        self.setUpViewingTimeStream(globalStream)
+        setUpViewingTimeStream(globalStream,
+                               itemId: TicketOfficeReactor.id,
+                               initialViewingTime: initialState.viewingTime)
     }
     
     public struct State {
@@ -77,7 +77,8 @@ final public class TicketOfficeReactor: Reactor {
             newState.viewingTime = with
             return newState
         case .propagateViewingTime:
-            propagateViewingTime(with: newState.viewingTime)
+            propagateViewingTime(itemId: TicketOfficeReactor.id,
+                                 with: newState.viewingTime)
             return newState
         case let .setPropagatedTime(with):
             newState.propagetedViewingTime = with
@@ -90,24 +91,11 @@ final public class TicketOfficeReactor: Reactor {
 }
 
 fileprivate extension TicketOfficeReactor {
-    private func setUpViewingTimeStream(_ globalStream: GlobalStreamService) {
-        self.viewingTimeStream = globalStream.getAndCreate(
-            id: StreamId.vieingTime,
-            defaultValue: .init(id: TicketOfficeReactor.id, item: initialState.viewingTime))
-    }
-    
     private func networkConnectionFailed() -> Observable<Mutation> {
         return networkStatus.observeNetworkStatus(interval: 1.0)
             .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .filter { $0 == .none }
             .map { _ in Mutation.networkConnectionFailed }
-    }
-    
-    private func propagateViewingTime(with: ViewingTime) {
-        viewingTimeStream?.onNext(
-            .init(id: TicketOfficeReactor.id,
-                  item: with)
-        )
     }
 }
 

@@ -11,10 +11,10 @@
 		991D20692252074E009D418C /* NetworkStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991D20682252074E009D418C /* NetworkStatusService.swift */; };
 		99842F1C224DD398006C7D9F /* GalleryReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F1B224DD398006C7D9F /* GalleryReactor.swift */; };
 		99842F1F224F4227006C7D9F /* GalleryFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F1E224F4227006C7D9F /* GalleryFeedService.swift */; };
-		99842F252250A1AA006C7D9F /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F242250A1AA006C7D9F /* Atomic.swift */; };
 		99842F272250AF2C006C7D9F /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F262250AF2C006C7D9F /* String+Date.swift */; };
 		99842F292250E3B1006C7D9F /* SynchronizedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F282250E3B1006C7D9F /* SynchronizedArray.swift */; };
 		99842F422251EDF4006C7D9F /* FileDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F412251EDF4006C7D9F /* FileDownloadService.swift */; };
+		9992C904225272A100461E8C /* ViewingTimeStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9992C903225272A100461E8C /* ViewingTimeStream.swift */; };
 		999413ED225253FA005BBB00 /* GlobalStreamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999413EC225253FA005BBB00 /* GlobalStreamService.swift */; };
 		99B929AF224A3E6800295D18 /* TicketOfficeReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B929AE224A3E6800295D18 /* TicketOfficeReactor.swift */; };
 /* End PBXBuildFile section */
@@ -37,10 +37,10 @@
 		991D20682252074E009D418C /* NetworkStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusService.swift; sourceTree = "<group>"; };
 		99842F1B224DD398006C7D9F /* GalleryReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryReactor.swift; sourceTree = "<group>"; };
 		99842F1E224F4227006C7D9F /* GalleryFeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryFeedService.swift; sourceTree = "<group>"; };
-		99842F242250A1AA006C7D9F /* Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
 		99842F262250AF2C006C7D9F /* String+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Date.swift"; sourceTree = "<group>"; };
 		99842F282250E3B1006C7D9F /* SynchronizedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedArray.swift; sourceTree = "<group>"; };
 		99842F412251EDF4006C7D9F /* FileDownloadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDownloadService.swift; sourceTree = "<group>"; };
+		9992C903225272A100461E8C /* ViewingTimeStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewingTimeStream.swift; sourceTree = "<group>"; };
 		999413EC225253FA005BBB00 /* GlobalStreamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalStreamService.swift; sourceTree = "<group>"; };
 		99B929A0224A3D7C00295D18 /* GalleryDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GalleryDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99B929A4224A3D7C00295D18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -108,11 +108,18 @@
 		99842F232250A19B006C7D9F /* Utill */ = {
 			isa = PBXGroup;
 			children = (
-				99842F242250A1AA006C7D9F /* Atomic.swift */,
 				99842F262250AF2C006C7D9F /* String+Date.swift */,
 				99842F282250E3B1006C7D9F /* SynchronizedArray.swift */,
 			);
 			path = Utill;
+			sourceTree = "<group>";
+		};
+		9992C9022252729500461E8C /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				9992C903225272A100461E8C /* ViewingTimeStream.swift */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 		99B92996224A3D7C00295D18 = {
@@ -136,6 +143,7 @@
 		99B929A2224A3D7C00295D18 /* GalleryDomain */ = {
 			isa = PBXGroup;
 			children = (
+				9992C9022252729500461E8C /* Common */,
 				99842F19224DD313006C7D9F /* TicketOffice */,
 				99842F1A224DD324006C7D9F /* Gallery */,
 				99842F1D224F3495006C7D9F /* Service */,
@@ -251,11 +259,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				99842F272250AF2C006C7D9F /* String+Date.swift in Sources */,
+				9992C904225272A100461E8C /* ViewingTimeStream.swift in Sources */,
 				991D20692252074E009D418C /* NetworkStatusService.swift in Sources */,
 				99842F292250E3B1006C7D9F /* SynchronizedArray.swift in Sources */,
 				99842F422251EDF4006C7D9F /* FileDownloadService.swift in Sources */,
 				999413ED225253FA005BBB00 /* GlobalStreamService.swift in Sources */,
-				99842F252250A1AA006C7D9F /* Atomic.swift in Sources */,
 				99B929AF224A3E6800295D18 /* TicketOfficeReactor.swift in Sources */,
 				99842F1C224DD398006C7D9F /* GalleryReactor.swift in Sources */,
 				99842F1F224F4227006C7D9F /* GalleryFeedService.swift in Sources */,
