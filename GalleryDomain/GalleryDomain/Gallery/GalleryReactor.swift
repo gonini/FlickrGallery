@@ -16,6 +16,7 @@ final public class GalleryReactor: Reactor {
     private static let defaultAnmtnTime = 1.0
     public let initialState: State
     
+    private var firstImageScheduling: Observable<Int> = .empty()
     private let viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>
     private let galleyImageStream = BehaviorSubject<GalleyImage?>(value: nil)
     private let galleyFeed: SynchronizedArray<URL> = .init()
@@ -47,6 +48,15 @@ final public class GalleryReactor: Reactor {
         galleryImageUrls()
             .subscribe(onNext: { self.galleyFeed.append($0) })
             .disposed(by: disposeBag)
+        
+        firstImageScheduling = Observable<Int>
+            .interval(0.1, scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
+            .filter { [weak self] _ in
+                guard let `self` = self else { return false }
+                return !self.galleyFeed.isEmpty
+            }
+            .take(1)
+            .share()
     }
     
     public struct State {
@@ -65,7 +75,7 @@ final public class GalleryReactor: Reactor {
         case propagateViewingTime
         case setPropagatedTime(with: ViewingTime)
         case setArtImage(with: GalleyImage)
-        case applyImageSlideTime
+        case applyViewingTime
     }
     
     public func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
@@ -82,7 +92,7 @@ final public class GalleryReactor: Reactor {
             return .concat([
                 .just(.setViewingTime(with: with)),
                 .just(.propagateViewingTime),
-                .just(.applyImageSlideTime)
+                .just(.applyViewingTime)
                 ])
         }
     }
@@ -107,9 +117,9 @@ final public class GalleryReactor: Reactor {
         case let .setArtImage(with):
             newState.galleyImage = with
             return newState
-        case .applyImageSlideTime:
-            chnageViewingTime(newState.viewingTime,
-                              anmtnTime: GalleryReactor.defaultAnmtnTime)
+        case .applyViewingTime:
+            applyViewingTime(newState.viewingTime,
+                             anmtnTime: GalleryReactor.defaultAnmtnTime)
             return newState
         }
     }
@@ -123,7 +133,7 @@ final public class GalleryReactor: Reactor {
             .flatMap { time in return Observable<Mutation>.concat([
                 .just(.setPropagatedTime(with: time)),
                 .just(.setViewingTime(with: time)),
-                .just(.applyImageSlideTime)
+                .just(.applyViewingTime)
                 ])}
     }
         
@@ -137,12 +147,14 @@ final public class GalleryReactor: Reactor {
             .map { URL(string: $0.imageUrl)! }
     }
     
-    private func chnageViewingTime(_ with: TimeInterval, anmtnTime: TimeInterval) {
+    private func applyViewingTime(_ with: TimeInterval, anmtnTime: TimeInterval) {
         timerDisposable?.dispose()
-        timerDisposable = Observable<Int>.interval(with + anmtnTime,
-                                                   scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
-            .startWith(0)
-            .filter { _ in !self.galleyFeed.isEmpty }
+        let userScheduling =
+            Observable<Int>.interval(with + anmtnTime,
+                                     scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
+                .filter { _ in !self.galleyFeed.isEmpty }
+
+        timerDisposable = Observable.merge(userScheduling, firstImageScheduling)
             .map { _ in
                 let ret = self.galleyFeed.first
                 self.galleyFeed.removeFirst()
