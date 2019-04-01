@@ -10,6 +10,10 @@
 		84C2A18BDC6D542907745772 /* Pods_GalleryDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05E759B4F59ED50D2F174856 /* Pods_GalleryDomain.framework */; };
 		99842F1C224DD398006C7D9F /* GalleryReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F1B224DD398006C7D9F /* GalleryReactor.swift */; };
 		99842F1F224F4227006C7D9F /* NewsFeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F1E224F4227006C7D9F /* NewsFeedModel.swift */; };
+		99842F252250A1AA006C7D9F /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F242250A1AA006C7D9F /* Atomic.swift */; };
+		99842F272250AF2C006C7D9F /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F262250AF2C006C7D9F /* String+Date.swift */; };
+		99842F292250E3B1006C7D9F /* SynchronizedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F282250E3B1006C7D9F /* SynchronizedArray.swift */; };
+		99842F2B2250FDEA006C7D9F /* GlobalStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F2A2250FDEA006C7D9F /* GlobalStream.swift */; };
 		99B929AF224A3E6800295D18 /* TicketOfficeReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B929AE224A3E6800295D18 /* TicketOfficeReactor.swift */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +34,10 @@
 		44D8801048AA76F3F7B77D0D /* Pods-GalleryDomain.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryDomain.debug.xcconfig"; path = "Target Support Files/Pods-GalleryDomain/Pods-GalleryDomain.debug.xcconfig"; sourceTree = "<group>"; };
 		99842F1B224DD398006C7D9F /* GalleryReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryReactor.swift; sourceTree = "<group>"; };
 		99842F1E224F4227006C7D9F /* NewsFeedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsFeedModel.swift; sourceTree = "<group>"; };
+		99842F242250A1AA006C7D9F /* Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
+		99842F262250AF2C006C7D9F /* String+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Date.swift"; sourceTree = "<group>"; };
+		99842F282250E3B1006C7D9F /* SynchronizedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedArray.swift; sourceTree = "<group>"; };
+		99842F2A2250FDEA006C7D9F /* GlobalStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalStream.swift; sourceTree = "<group>"; };
 		99B929A0224A3D7C00295D18 /* GalleryDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GalleryDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99B929A4224A3D7C00295D18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		99B929AE224A3E6800295D18 /* TicketOfficeReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketOfficeReactor.swift; sourceTree = "<group>"; };
@@ -90,6 +98,17 @@
 			path = Service;
 			sourceTree = "<group>";
 		};
+		99842F232250A19B006C7D9F /* Utill */ = {
+			isa = PBXGroup;
+			children = (
+				99842F242250A1AA006C7D9F /* Atomic.swift */,
+				99842F262250AF2C006C7D9F /* String+Date.swift */,
+				99842F282250E3B1006C7D9F /* SynchronizedArray.swift */,
+				99842F2A2250FDEA006C7D9F /* GlobalStream.swift */,
+			);
+			path = Utill;
+			sourceTree = "<group>";
+		};
 		99B92996224A3D7C00295D18 = {
 			isa = PBXGroup;
 			children = (
@@ -114,6 +133,7 @@
 				99842F19224DD313006C7D9F /* TicketOffice */,
 				99842F1A224DD324006C7D9F /* Gallery */,
 				99842F1D224F3495006C7D9F /* Service */,
+				99842F232250A19B006C7D9F /* Utill */,
 				99B929A4224A3D7C00295D18 /* Info.plist */,
 			);
 			path = GalleryDomain;
@@ -224,6 +244,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				99842F272250AF2C006C7D9F /* String+Date.swift in Sources */,
+				99842F292250E3B1006C7D9F /* SynchronizedArray.swift in Sources */,
+				99842F2B2250FDEA006C7D9F /* GlobalStream.swift in Sources */,
+				99842F252250A1AA006C7D9F /* Atomic.swift in Sources */,
 				99B929AF224A3E6800295D18 /* TicketOfficeReactor.swift in Sources */,
 				99842F1C224DD398006C7D9F /* GalleryReactor.swift in Sources */,
 				99842F1F224F4227006C7D9F /* NewsFeedModel.swift in Sources */,

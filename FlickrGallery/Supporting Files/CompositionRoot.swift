@@ -19,16 +19,21 @@ struct GalleryVCLazyHolder {
 
 extension SwinjectStoryboard {
     @objc class func setup() {
+        
+        defaultContainer.register(GlobalStream.self) { _ in
+            return GlobalStream()
+        }.inObjectScope(.container)
+        
         defaultContainer.register(ReplaySubject<ViewingTime>.self) { _ in
             return .create(bufferSize: 1)
         }.inObjectScope(.container)
         
         defaultContainer.register(TicketOfficeReactor.self) { c in
-            return .init(viewingTimeStream: c.resolve(ReplaySubject<ViewingTime>.self)!)
+            return .init(globalStream: c.resolve(GlobalStream.self)!)
         }
      
         defaultContainer.register(GalleryReactor.self) { c in
-            return .init(viewingTimeStream: c.resolve(ReplaySubject<ViewingTime>.self)!)
+            return .init(globalStream: c.resolve(GlobalStream.self)!)
         }
      
         defaultContainer.register(GalleryVC.self) { c in

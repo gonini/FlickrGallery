@@ -10,6 +10,7 @@ excluded:
 - Pods
 
 disabled_rules:
+- implicit_getter
 - trailing_whitespace
 - force_cast
 - type_name

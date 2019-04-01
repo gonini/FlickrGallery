@@ -12,38 +12,41 @@ import ReactorKit
 import RxSwift
 
 final public class GalleryReactor: Reactor {
+    private static let id = "GalleryReactor"
     public let initialState: State
-    private let viewingTimeStream: ReplaySubject<ViewingTime>
-    private let galleyImageStream: Observable<Data>? = nil
+    private let viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>
+    private let galleyImageStream = BehaviorSubject<URL?>(value: nil)
+    private let galleyImageQueue: SynchronizedArray<URL> = .init()
+    private var timerDisposable: Disposable?
+    
     var disposeBag = DisposeBag()
     
-    public init(viewingTimeStream: ReplaySubject<ViewingTime>) {
+    public init(globalStream: GlobalStream) {
         initialState = State(
             viewingTimeLimit: ViewingTimeRange.basic,
-            propagetedViewingTime: ViewingTimeRange.defaultMinTime,
+            propagetedViewingTime: nil,
             viewingTime: ViewingTimeRange.defaultMinTime,
             artImage: nil
         )
-        self.viewingTimeStream = viewingTimeStream
         
-        var model = GalleryFeedModel()
+        let defaultViewingTime =
+            GlobalStreamItem<ViewingTime>(id: GalleryReactor.id,
+                                          item: initialState.viewingTime)
         
-        model.galleryFeeds
-        .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
-            .subscribe(onNext: { (feeds) in
-                _ = "A"
-            }, onError: { (error) in
-                _ = "A"
-            })
-        .disposed(by: disposeBag)
+        self.viewingTimeStream = globalStream
+            .getAndCreate(id: StreamId.vieingTime,
+                          defaultValue: defaultViewingTime)
         
+        galleryImageUrls()
+            .subscribe(onNext: { self.galleyImageQueue.append($0) })
+            .disposed(by: disposeBag)
     }
     
     public struct State {
         public var viewingTimeLimit: ViewingTimeRange
-        public var propagetedViewingTime: ViewingTime
+        public var propagetedViewingTime: ViewingTime?
         public var viewingTime: ViewingTime
-        public var artImage: Data?
+        public var artImage: URL?
     }
     
     public enum Action {
@@ -54,18 +57,25 @@ final public class GalleryReactor: Reactor {
         case setViewingTime(with: ViewingTime)
         case propagateViewingTime
         case setPropagatedTime(with: ViewingTime)
+        case setArtImage(with: URL)
+        case applyImageSlideTime
     }
     
     public func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
-        return .merge(mutation, propagatedTime())
+        let artImageMutation = galleyImageStream
+            .flatMap { Observable.from(optional: $0) }
+            .map(Mutation.setArtImage)
+        
+        return .merge(mutation, artImageMutation, propagatedTime())
     }
     
     public func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case let .exchangeTickets(with):
             return .concat([
-                .just(Mutation.setViewingTime(with: with)),
-                .just(Mutation.propagateViewingTime)
+                .just(.setViewingTime(with: with)),
+                .just(.propagateViewingTime),
+                .just(.applyImageSlideTime)
                 ])
         }
     }
@@ -76,23 +86,58 @@ final public class GalleryReactor: Reactor {
         case let .setViewingTime(with):
             newState.viewingTime = with
             return newState
-        case .setPropagatedTime(let with):
-            guard newState.viewingTime != with else { return newState }
+        case let .setPropagatedTime(with):
             newState.propagetedViewingTime = with
             return newState
         case .propagateViewingTime:
-            viewingTimeStream.onNext(newState.viewingTime)
+            viewingTimeStream.onNext(
+                .init(id: GalleryReactor.id,
+                      item: newState.viewingTime)
+            )
+            return newState
+        case let .setArtImage(with):
+            newState.artImage = with
+            return newState
+        case .applyImageSlideTime:
+            chnageViewingTime(newState.viewingTime)
             return newState
         }
     }
     
     private func propagatedTime() -> Observable<Mutation> {
         return viewingTimeStream
+            .filter { $0.id != GalleryReactor.id }
+            .map { $0.item }
             .observeOn(MainScheduler.asyncInstance)
             .distinctUntilChanged()
             .flatMap { time in return Observable<Mutation>.concat([
-                .just(Mutation.setPropagatedTime(with: time)),
-                .just(Mutation.setViewingTime(with: time))
+                .just(.setPropagatedTime(with: time)),
+                .just(.setViewingTime(with: time)),
+                .just(.applyImageSlideTime)
                 ])}
     }
+        
+    private func galleryImageUrls() -> Observable<URL> {
+        var model = GalleryFeedModel()
+        return model.galleryFeeds
+            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            .do(onNext: { (feedItem) in
+                print(feedItem.title)
+            })
+            .map { URL(string: $0.imageUrl)! }
+    }
+    
+    private func chnageViewingTime(_ with: TimeInterval) {
+        timerDisposable?.dispose()
+        timerDisposable = Observable<Int>.interval(with, scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
+            .debug()
+            .subscribe(onNext: { [weak self] _ in
+                guard let `self` = self else { return }
+                if let url = self.galleyImageQueue.first {
+                    self.galleyImageStream.onNext(url)
+                    self.galleyImageQueue.remove(at: 0)
+                }
+            })
+    }
+    
 }

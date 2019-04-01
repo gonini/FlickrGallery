@@ -140,6 +140,7 @@
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="artImageView" destination="aGX-9X-Leh" id="Pd0-M4-734"/>
                         <outlet property="viewingTimeLabel" destination="R59-Ez-cFY" id="IoU-aI-kOk"/>
                         <outlet property="viewingTimeSlider" destination="2ah-W7-lpX" id="3h0-fw-U0E"/>
                     </connections>

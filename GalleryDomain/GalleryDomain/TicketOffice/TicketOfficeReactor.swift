@@ -15,15 +15,21 @@ public typealias ViewingTime = TimeInterval
 final public class TicketOfficeReactor: Reactor {
     private static let id = "TicketOfficeReactor"
     public let initialState: State
-    private let viewingTimeStream: ReplaySubject<ViewingTime>
+    private let viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>
     
-    public init(viewingTimeStream: ReplaySubject<ViewingTime>) {
+    public init(globalStream: GlobalStream) {
         initialState = State(
             viewingTimeLimit: ViewingTimeRange.basic,
             propagetedViewingTime: ViewingTimeRange.defaultMinTime,
             viewingTime: ViewingTimeRange.defaultMinTime
         )
-        self.viewingTimeStream = viewingTimeStream
+        
+        let defaultViewingTime =
+            GlobalStreamItem<ViewingTime>(id: TicketOfficeReactor.id, item: initialState.viewingTime)
+        
+        self.viewingTimeStream = globalStream
+            .getAndCreate(id: StreamId.vieingTime,
+                          defaultValue: defaultViewingTime)
     }
     
     public struct State {
@@ -45,6 +51,8 @@ final public class TicketOfficeReactor: Reactor {
     
     public func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
         let propagated = viewingTimeStream
+            .filter { $0.id != TicketOfficeReactor.id }
+            .map { $0.item }
             .observeOn(MainScheduler.asyncInstance)
             .distinctUntilChanged()
             .flatMap { time in return Observable<Mutation>.concat([
@@ -71,13 +79,21 @@ final public class TicketOfficeReactor: Reactor {
             newState.viewingTime = with
             return newState
         case .propagateViewingTime:
-            viewingTimeStream.onNext(newState.viewingTime)
+            viewingTimeStream.onNext(
+                .init(id: TicketOfficeReactor.id,
+                      item: newState.viewingTime)
+            )
             return newState
         case let .setPropagatedTime(with):
             guard newState.viewingTime != with else { return newState }
             newState.propagetedViewingTime = with
             return newState
         }
+    }
+    
+    private func createViewingTimeItem(_ with: ViewingTime) -> GlobalStreamItem<ViewingTime> {
+        return .init(id: TicketOfficeReactor.id,
+              item: with)
     }
 }
 

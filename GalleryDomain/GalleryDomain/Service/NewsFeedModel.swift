@@ -15,8 +15,21 @@ import ObjectMapper
 
 struct GalleryFeedModel {
     private static let flickerFeedUrl = URL(string: "https://api.flickr.com/services/feeds/photos_public.gne")!
+    private let lastPublishedDateStream = BehaviorSubject<Date>(value: .init(timeIntervalSince1970: 0))
     
-    lazy var galleryFeeds: Observable<[FeedItem]> = self.updateGalleryFeedsRepeatedly(publishInterval: 5.0)
+    lazy var galleryFeeds = self.filterNewGalleryFeeds()
+    
+    private func filterNewGalleryFeeds() -> Observable<FeedItem> {
+        return updateGalleryFeedsRepeatedly(publishInterval: 5.0)
+            .withLatestFrom(lastPublishedDateStream) { (feeds, lastPublishedDate) -> [FeedItem] in
+                feeds.filter { $0.publishedDate > lastPublishedDate }
+                    .sorted { $0.publishedDate > $1.publishedDate }
+            }
+            .filter { !$0.isEmpty }
+            .do(onNext: { self.lastPublishedDateStream.onNext($0.first!.publishedDate) })
+            .flatMap({ Observable.from($0) })
+        
+    }
     
     private func updateGalleryFeedsRepeatedly(publishInterval: RxTimeInterval) -> Observable<[FeedItem]> {
         let timer = Observable<Int>
@@ -62,7 +75,8 @@ struct GalleryFeedModel {
 
 class FeedItem: Mappable {
     var title: String!
-    var published: Date!
+    var publishedText: String!
+    var publishedDate: Date!
     var media: Media!
     var imageUrl: String!
     
@@ -70,9 +84,10 @@ class FeedItem: Mappable {
     
     func mapping(map: Map) {
         title <- map["title"]
-        published <- (map["published"], DateTransform())
+        publishedText <- (map["published"])
         media <-  map["media"]
         imageUrl = media.url
+        publishedDate = publishedText.toFlickerFormatDate()
     }
 }
 
