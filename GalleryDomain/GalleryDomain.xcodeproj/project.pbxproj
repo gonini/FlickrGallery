@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		84C2A18BDC6D542907745772 /* Pods_GalleryDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05E759B4F59ED50D2F174856 /* Pods_GalleryDomain.framework */; };
+		991D20692252074E009D418C /* NetworkStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991D20682252074E009D418C /* NetworkStatusService.swift */; };
 		99842F1C224DD398006C7D9F /* GalleryReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F1B224DD398006C7D9F /* GalleryReactor.swift */; };
 		99842F1F224F4227006C7D9F /* NewsFeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F1E224F4227006C7D9F /* NewsFeedModel.swift */; };
 		99842F252250A1AA006C7D9F /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F242250A1AA006C7D9F /* Atomic.swift */; };
@@ -33,6 +34,7 @@
 /* Begin PBXFileReference section */
 		05E759B4F59ED50D2F174856 /* Pods_GalleryDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GalleryDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		44D8801048AA76F3F7B77D0D /* Pods-GalleryDomain.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryDomain.debug.xcconfig"; path = "Target Support Files/Pods-GalleryDomain/Pods-GalleryDomain.debug.xcconfig"; sourceTree = "<group>"; };
+		991D20682252074E009D418C /* NetworkStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusService.swift; sourceTree = "<group>"; };
 		99842F1B224DD398006C7D9F /* GalleryReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryReactor.swift; sourceTree = "<group>"; };
 		99842F1E224F4227006C7D9F /* NewsFeedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsFeedModel.swift; sourceTree = "<group>"; };
 		99842F242250A1AA006C7D9F /* Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 			children = (
 				99842F1E224F4227006C7D9F /* NewsFeedModel.swift */,
 				99842F412251EDF4006C7D9F /* FileDownloadService.swift */,
+				991D20682252074E009D418C /* NetworkStatusService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				99842F272250AF2C006C7D9F /* String+Date.swift in Sources */,
+				991D20692252074E009D418C /* NetworkStatusService.swift in Sources */,
 				99842F292250E3B1006C7D9F /* SynchronizedArray.swift in Sources */,
 				99842F422251EDF4006C7D9F /* FileDownloadService.swift in Sources */,
 				99842F2B2250FDEA006C7D9F /* GlobalStream.swift in Sources */,

@@ -73,10 +73,8 @@ class TicketOfficeVC: UIViewController, StoryboardView {
         
         galleryButtonTap
             .subscribe(onNext: { [weak self] _ in
-                guard let `self` = self,
-                    let galleryVC = self.lazyGalleryVC?.galleryVC.instance else { return }
-                
- self.navigationController?.pushViewController(galleryVC, animated: true)
+                guard let `self` = self, let galleryVC = self.lazyGalleryVC?.galleryVC.instance else { return }
+                self.navigationController?.pushViewController(galleryVC, animated: true)
             })
             .disposed(by: disposeBag)
     }

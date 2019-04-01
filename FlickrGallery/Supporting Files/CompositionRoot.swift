@@ -20,7 +20,11 @@ struct GalleryVCLazyHolder {
 
 extension SwinjectStoryboard {
     @objc class func setup() {
-        defaultContainer.register(ImageDownloadService.self) { _ in
+        defaultContainer.register(NetworkStatusService.self) { _ in
+            return ReachabilityService()
+        }
+        
+        defaultContainer.register(FileDownloadService.self) { _ in
             return ImageDownloadService()
         }
         
@@ -33,12 +37,14 @@ extension SwinjectStoryboard {
         }.inObjectScope(.container)
         
         defaultContainer.register(TicketOfficeReactor.self) { c in
-            return .init(globalStream: c.resolve(GlobalStream.self)!)
+            return .init(globalStream: c.resolve(GlobalStream.self)!,
+                         networkStatus: c.resolve(NetworkStatusService.self)!)
         }
      
         defaultContainer.register(GalleryReactor.self) { c in
             return .init(globalStream: c.resolve(GlobalStream.self)!,
-            downloadService: c.resolve(ImageDownloadService.self)!)
+                         downloadService: c.resolve(FileDownloadService.self)!,
+                         networkStatus: c.resolve(NetworkStatusService.self)!)
         }
      
         defaultContainer.register(GalleryVC.self) { c in

@@ -16,8 +16,9 @@ final public class TicketOfficeReactor: Reactor {
     private static let id = "TicketOfficeReactor"
     public let initialState: State
     private let viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>
+    private var disposeBag = DisposeBag()
     
-    public init(globalStream: GlobalStream) {
+    public init(globalStream: GlobalStream, networkStatus: NetworkStatusService) {
         initialState = State(
             viewingTimeLimit: ViewingTimeRange.basic,
             propagetedViewingTime: ViewingTimeRange.defaultMinTime,
@@ -30,6 +31,12 @@ final public class TicketOfficeReactor: Reactor {
         self.viewingTimeStream = globalStream
             .getAndCreate(id: StreamId.vieingTime,
                           defaultValue: defaultViewingTime)
+                
+        networkStatus.observeNetworkStatus(interval: 1.0)
+            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            .subscribe(onNext: { (status) in
+                print(status)
+            }).disposed(by: disposeBag)
     }
     
     public struct State {

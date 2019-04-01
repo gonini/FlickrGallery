@@ -52,7 +52,8 @@ final class GalleryVC: UIViewController, StoryboardView {
         
         let viewingTime = viewingTimeSlider.rx
             .timeValue
-            .throttle(0.3, scheduler: MainScheduler.instance)
+            .debounce(0.5, scheduler: MainScheduler.instance)
+            .skip(1)
         
         propagetedViewingTime
             .bind(onNext: { [weak self] in
@@ -62,6 +63,7 @@ final class GalleryVC: UIViewController, StoryboardView {
             .disposed(by: disposeBag)
         
         viewingTime
+            .debug()
             .map(Reactor.Action.exchangeTickets)
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -99,10 +101,10 @@ extension UIImageView {
         }, completion: completion)  }
     
     func fadeOut(_ duration: TimeInterval = 0.5,
-                 delay: TimeInterval = 1.0,
+                 delay: TimeInterval = 0.0,
                  completion: @escaping (Bool) -> Void = {(finished: Bool) -> Void in}) {
         UIView.animate(withDuration: duration, delay: delay, options: UIView.AnimationOptions.curveEaseIn, animations: {
-            self.alpha = 0.3
+            self.alpha = 0.0
         }, completion: completion)
     }
         

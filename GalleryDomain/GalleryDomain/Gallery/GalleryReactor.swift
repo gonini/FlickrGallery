@@ -24,7 +24,9 @@ final public class GalleryReactor: Reactor {
     private var timerDisposable: Disposable?
     private var disposeBag = DisposeBag()
     
-    public init(globalStream: GlobalStream, downloadService: FileDownloadService) {
+    public init(globalStream: GlobalStream,
+                downloadService: FileDownloadService,
+                networkStatus: NetworkStatusService) {
         initialState = State(
             viewingTimeLimit: ViewingTimeRange.basic,
             propagetedViewingTime: nil,
@@ -92,7 +94,9 @@ final public class GalleryReactor: Reactor {
             newState.viewingTime = with
             return newState
         case let .setPropagatedTime(with):
-            newState.propagetedViewingTime = with
+            if newState.viewingTime != newState.propagetedViewingTime {
+                newState.propagetedViewingTime = with
+            }
             return newState
         case .propagateViewingTime:
             viewingTimeStream.onNext(
