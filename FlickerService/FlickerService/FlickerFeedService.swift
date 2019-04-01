@@ -31,7 +31,6 @@ public struct FlickerFeedService: GalleryFeedService {
             .flatMap({ Observable.from($0) })
     }
 
-    
     private func updateGalleryFeedsRepeatedly(publishInterval: RxTimeInterval) -> Observable<[FeedItem]> {
         let timer = Observable<Int>
             .interval(publishInterval,

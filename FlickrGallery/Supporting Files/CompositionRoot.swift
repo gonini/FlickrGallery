@@ -32,17 +32,17 @@ extension SwinjectStoryboard {
             return FlickerFeedService()
         }
         
-        defaultContainer.register(GlobalStream.self) { _ in
-            return GlobalStream()
+        defaultContainer.register(GlobalStreamService.self) { _ in
+            return TemporaryGlobalStream()
         }.inObjectScope(.container)
         
         defaultContainer.register(TicketOfficeReactor.self) { c in
-            return .init(globalStream: c.resolve(GlobalStream.self)!,
+            return .init(globalStream: c.resolve(GlobalStreamService.self)!,
                          networkStatus: c.resolve(NetworkStatusService.self)!)
         }
      
         defaultContainer.register(GalleryReactor.self) { c in
-            return .init(globalStream: c.resolve(GlobalStream.self)!,
+            return .init(globalStream: c.resolve(GlobalStreamService.self)!,
                          downloadService: c.resolve(FileDownloadService.self)!,
                          feedService: c.resolve(GalleryFeedService.self)!)
         }

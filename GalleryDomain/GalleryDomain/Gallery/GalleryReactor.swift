@@ -27,7 +27,7 @@ final public class GalleryReactor: Reactor {
     private var timerDisposable: Disposable?
     private var disposeBag = DisposeBag()
     
-    public init(globalStream: GlobalStream,
+    public init(globalStream: GlobalStreamService,
                 downloadService: FileDownloadService,
                 feedService: GalleryFeedService) {
         self.downloadService = downloadService
@@ -98,7 +98,7 @@ final public class GalleryReactor: Reactor {
 }
 
 fileprivate extension GalleryReactor {
-    private func setUpViewingTimeStream(_ globalStream: GlobalStream) {
+    private func setUpViewingTimeStream(_ globalStream: GlobalStreamService) {
         self.viewingTimeStream = globalStream.getAndCreate(
             id: StreamId.vieingTime,
             defaultValue: .init(id: GalleryReactor.id, item: initialState.viewingTime))

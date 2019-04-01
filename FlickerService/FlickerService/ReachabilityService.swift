@@ -12,7 +12,7 @@ import GalleryDomain
 import Alamofire
 import RxSwift
 
-public class ReachabilityService: NetworkStatusService {
+public struct ReachabilityService: NetworkStatusService {
     public func observeNetworkStatus() -> Observable<NetworkStatus> {
         return .empty()
     }

@@ -22,7 +22,7 @@ final public class TicketOfficeReactor: Reactor {
     private var networkStatus: NetworkStatusService
     private var disposeBag = DisposeBag()
     
-    public init(globalStream: GlobalStream, networkStatus: NetworkStatusService) {
+    public init(globalStream: GlobalStreamService, networkStatus: NetworkStatusService) {
         initialState = State.initialState
         self.networkStatus = networkStatus
         self.setUpViewingTimeStream(globalStream)
@@ -90,7 +90,7 @@ final public class TicketOfficeReactor: Reactor {
 }
 
 fileprivate extension TicketOfficeReactor {
-    private func setUpViewingTimeStream(_ globalStream: GlobalStream) {
+    private func setUpViewingTimeStream(_ globalStream: GlobalStreamService) {
         self.viewingTimeStream = globalStream.getAndCreate(
             id: StreamId.vieingTime,
             defaultValue: .init(id: TicketOfficeReactor.id, item: initialState.viewingTime))
