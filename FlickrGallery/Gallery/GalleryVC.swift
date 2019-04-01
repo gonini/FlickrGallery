@@ -28,10 +28,9 @@ final class GalleryVC: UIViewController, StoryboardView {
             .flatMap { Observable.from(optional: $0) }
             .distinctUntilChanged()
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { [weak self] url in
+            .subscribe(onNext: { [weak self] data in
                 guard let `self` = self else { return }
-                print(url)
-                self.artImageView.load(url: url)
+                self.artImageView.load(data: data)
             }).disposed(by: disposeBag)
         
         reactor.state.map { $0.viewingTimeLimit }
@@ -56,7 +55,6 @@ final class GalleryVC: UIViewController, StoryboardView {
             .throttle(0.3, scheduler: MainScheduler.instance)
         
         propagetedViewingTime
-            
             .bind(onNext: { [weak self] in
                 guard let `self` = self else { return }
                 self.viewingTimeSlider.value = Float($0)
@@ -79,13 +77,11 @@ final class GalleryVC: UIViewController, StoryboardView {
 }
 
 extension UIImageView {
-    func load(url: URL) {
+    func load(data: Data) {
         DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self?.image = image
-                    }
+            if let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self?.image = image
                 }
             }
         }

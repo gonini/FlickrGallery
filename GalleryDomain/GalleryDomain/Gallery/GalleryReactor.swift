@@ -14,14 +14,16 @@ import RxSwift
 final public class GalleryReactor: Reactor {
     private static let id = "GalleryReactor"
     public let initialState: State
+    
     private let viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>
-    private let galleyImageStream = BehaviorSubject<URL?>(value: nil)
+    private let galleyImageStream = BehaviorSubject<Data?>(value: nil)
     private let galleyImageQueue: SynchronizedArray<URL> = .init()
+    private let downloadService: FileDownloadService
+    
     private var timerDisposable: Disposable?
+    private var disposeBag = DisposeBag()
     
-    var disposeBag = DisposeBag()
-    
-    public init(globalStream: GlobalStream) {
+    public init(globalStream: GlobalStream, downloadService: FileDownloadService) {
         initialState = State(
             viewingTimeLimit: ViewingTimeRange.basic,
             propagetedViewingTime: nil,
@@ -37,6 +39,8 @@ final public class GalleryReactor: Reactor {
             .getAndCreate(id: StreamId.vieingTime,
                           defaultValue: defaultViewingTime)
         
+        self.downloadService = downloadService
+        
         galleryImageUrls()
             .subscribe(onNext: { self.galleyImageQueue.append($0) })
             .disposed(by: disposeBag)
@@ -46,7 +50,7 @@ final public class GalleryReactor: Reactor {
         public var viewingTimeLimit: ViewingTimeRange
         public var propagetedViewingTime: ViewingTime?
         public var viewingTime: ViewingTime
-        public var artImage: URL?
+        public var artImage: Data?
     }
     
     public enum Action {
@@ -57,7 +61,7 @@ final public class GalleryReactor: Reactor {
         case setViewingTime(with: ViewingTime)
         case propagateViewingTime
         case setPropagatedTime(with: ViewingTime)
-        case setArtImage(with: URL)
+        case setArtImage(with: Data)
         case applyImageSlideTime
     }
     
@@ -130,13 +134,17 @@ final public class GalleryReactor: Reactor {
     private func chnageViewingTime(_ with: TimeInterval) {
         timerDisposable?.dispose()
         timerDisposable = Observable<Int>.interval(with, scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
-            .debug()
-            .subscribe(onNext: { [weak self] _ in
+            .filter { _ in !self.galleyImageQueue.isEmpty }
+            .map { _ in
+                let ret = self.galleyImageQueue.first
+                self.galleyImageQueue.removeFirst()
+                return ret
+            }
+            .flatMap { Observable.from(optional: $0) }
+            .flatMap(downloadService.load)
+            .subscribe(onNext: { [weak self] data in
                 guard let `self` = self else { return }
-                if let url = self.galleyImageQueue.first {
-                    self.galleyImageStream.onNext(url)
-                    self.galleyImageQueue.remove(at: 0)
-                }
+                self.galleyImageStream.onNext(data)
             })
     }
     

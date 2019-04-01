@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		99842F442251EEEF006C7D9F /* ImageDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F432251EEEF006C7D9F /* ImageDownloadService.swift */; };
 		9C50AE7FF9A09B44FF053566 /* Pods_FlickerService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0F407BF9DAC6AC493B380B2 /* Pods_FlickerService.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3304BB50F061B187152DD7E2 /* Pods-FlickerService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlickerService.release.xcconfig"; path = "Target Support Files/Pods-FlickerService/Pods-FlickerService.release.xcconfig"; sourceTree = "<group>"; };
 		482232FA602423401AE6A7EC /* Pods-FlickerService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlickerService.debug.xcconfig"; path = "Target Support Files/Pods-FlickerService/Pods-FlickerService.debug.xcconfig"; sourceTree = "<group>"; };
+		99842F432251EEEF006C7D9F /* ImageDownloadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloadService.swift; sourceTree = "<group>"; };
 		99AFD7B2224A4FC400C377F0 /* FlickerService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FlickerService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99AFD7B6224A4FC400C377F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F0F407BF9DAC6AC493B380B2 /* Pods_FlickerService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FlickerService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,6 +62,7 @@
 			isa = PBXGroup;
 			children = (
 				99AFD7B6224A4FC400C377F0 /* Info.plist */,
+				99842F432251EEEF006C7D9F /* ImageDownloadService.swift */,
 			);
 			path = FlickerService;
 			sourceTree = "<group>";
@@ -178,6 +181,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				99842F442251EEEF006C7D9F /* ImageDownloadService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

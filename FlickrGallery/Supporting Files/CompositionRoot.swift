@@ -9,6 +9,7 @@
 import UIKit
 
 import GalleryDomain
+import FlickerService
 import RxSwift
 import Swinject
 import SwinjectStoryboard
@@ -19,6 +20,9 @@ struct GalleryVCLazyHolder {
 
 extension SwinjectStoryboard {
     @objc class func setup() {
+        defaultContainer.register(ImageDownloadService.self) { _ in
+            return ImageDownloadService()
+        }
         
         defaultContainer.register(GlobalStream.self) { _ in
             return GlobalStream()
@@ -33,7 +37,8 @@ extension SwinjectStoryboard {
         }
      
         defaultContainer.register(GalleryReactor.self) { c in
-            return .init(globalStream: c.resolve(GlobalStream.self)!)
+            return .init(globalStream: c.resolve(GlobalStream.self)!,
+            downloadService: c.resolve(ImageDownloadService.self)!)
         }
      
         defaultContainer.register(GalleryVC.self) { c in

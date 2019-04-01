@@ -8,6 +8,7 @@
 //
 
 import Foundation
+
 public class SynchronizedArray<Element> {
     private let queue = DispatchQueue(label: "io.zamzam.ZamzamKit.SynchronizedArray", attributes: .concurrent)
     private var array = [Element]()
@@ -192,6 +193,14 @@ public extension SynchronizedArray {
         queue.async(flags: .barrier) {
             let element = self.array.remove(at: index)
             DispatchQueue.main.async { completion?(element) }
+        }
+    }
+    
+    func removeFirst() {
+        queue.async(flags: .barrier) {
+            if !self.array.isEmpty {
+                self.array.removeFirst()
+            }
         }
     }
     

@@ -14,6 +14,7 @@
 		99842F272250AF2C006C7D9F /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F262250AF2C006C7D9F /* String+Date.swift */; };
 		99842F292250E3B1006C7D9F /* SynchronizedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F282250E3B1006C7D9F /* SynchronizedArray.swift */; };
 		99842F2B2250FDEA006C7D9F /* GlobalStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F2A2250FDEA006C7D9F /* GlobalStream.swift */; };
+		99842F422251EDF4006C7D9F /* FileDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F412251EDF4006C7D9F /* FileDownloadService.swift */; };
 		99B929AF224A3E6800295D18 /* TicketOfficeReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B929AE224A3E6800295D18 /* TicketOfficeReactor.swift */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +39,7 @@
 		99842F262250AF2C006C7D9F /* String+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Date.swift"; sourceTree = "<group>"; };
 		99842F282250E3B1006C7D9F /* SynchronizedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedArray.swift; sourceTree = "<group>"; };
 		99842F2A2250FDEA006C7D9F /* GlobalStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalStream.swift; sourceTree = "<group>"; };
+		99842F412251EDF4006C7D9F /* FileDownloadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDownloadService.swift; sourceTree = "<group>"; };
 		99B929A0224A3D7C00295D18 /* GalleryDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GalleryDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99B929A4224A3D7C00295D18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		99B929AE224A3E6800295D18 /* TicketOfficeReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketOfficeReactor.swift; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				99842F1E224F4227006C7D9F /* NewsFeedModel.swift */,
+				99842F412251EDF4006C7D9F /* FileDownloadService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -246,6 +249,7 @@
 			files = (
 				99842F272250AF2C006C7D9F /* String+Date.swift in Sources */,
 				99842F292250E3B1006C7D9F /* SynchronizedArray.swift in Sources */,
+				99842F422251EDF4006C7D9F /* FileDownloadService.swift in Sources */,
 				99842F2B2250FDEA006C7D9F /* GlobalStream.swift in Sources */,
 				99842F252250A1AA006C7D9F /* Atomic.swift in Sources */,
 				99B929AF224A3E6800295D18 /* TicketOfficeReactor.swift in Sources */,
