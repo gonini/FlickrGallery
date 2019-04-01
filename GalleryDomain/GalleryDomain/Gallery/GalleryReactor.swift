@@ -12,51 +12,29 @@ import ReactorKit
 import RxSwift
 
 final public class GalleryReactor: Reactor {
-    private static let id = "GalleryReactor"
-    private static let defaultAnmtnTime = 1.0
     public let initialState: State
     
-    private var firstImageScheduling: Observable<Int> = .empty()
-    private let viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>
-    private let galleyImageStream = BehaviorSubject<GalleyImage?>(value: nil)
-    private let galleyFeed: SynchronizedArray<URL> = .init()
+    private static let id = "GalleryReactor"
+    private static let galleryImageFadeTime = 1.0
+    private static let feedRefreshInterval = 5.0
+    
+    private let imageStream = BehaviorSubject<GalleyImage?>(value: nil)
+    private let feedBuffer: SynchronizedArray<URL> = .init()
     private let downloadService: FileDownloadService
     
+    private var firstImageScheduler: Observable<Int> = .empty()
+    private var viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>?
     private var timerDisposable: Disposable?
     private var disposeBag = DisposeBag()
     
     public init(globalStream: GlobalStream,
                 downloadService: FileDownloadService,
-                networkStatus: NetworkStatusService) {
-        initialState = State(
-            viewingTimeLimit: ViewingTimeRange.basic,
-            propagetedViewingTime: nil,
-            viewingTime: ViewingTimeRange.defaultMinTime,
-            galleyImage: .init(image: nil, imswpAnmtnTime: 0)
-        )
-        
-        let defaultViewingTime =
-            GlobalStreamItem<ViewingTime>(id: GalleryReactor.id,
-                                          item: initialState.viewingTime)
-        
-        self.viewingTimeStream = globalStream
-            .getAndCreate(id: StreamId.vieingTime,
-                          defaultValue: defaultViewingTime)
-        
+                feedService: GalleryFeedService) {
         self.downloadService = downloadService
-        
-        galleryImageUrls()
-            .subscribe(onNext: { self.galleyFeed.append($0) })
-            .disposed(by: disposeBag)
-        
-        firstImageScheduling = Observable<Int>
-            .interval(0.1, scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
-            .filter { [weak self] _ in
-                guard let `self` = self else { return false }
-                return !self.galleyFeed.isEmpty
-            }
-            .take(1)
-            .share()
+        initialState = State.initialState
+        setUpViewingTimeStream(globalStream)
+        observeFeeds(feedService)
+        setUpScheduler()
     }
     
     public struct State {
@@ -79,10 +57,9 @@ final public class GalleryReactor: Reactor {
     }
     
     public func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
-        let artImageMutation = galleyImageStream
+        let artImageMutation = imageStream
             .flatMap { Observable.from(optional: $0) }
             .map(Mutation.setArtImage)
-        
         return .merge(mutation, artImageMutation, propagatedTime())
     }
     
@@ -104,28 +81,50 @@ final public class GalleryReactor: Reactor {
             newState.viewingTime = with
             return newState
         case let .setPropagatedTime(with):
-            if newState.viewingTime != newState.propagetedViewingTime {
-                newState.propagetedViewingTime = with
-            }
+            newState.propagetedViewingTime = with
             return newState
         case .propagateViewingTime:
-            viewingTimeStream.onNext(
-                .init(id: GalleryReactor.id,
-                      item: newState.viewingTime)
-            )
+            self.propagateViewingTime(with: newState.viewingTime)
             return newState
         case let .setArtImage(with):
             newState.galleyImage = with
             return newState
         case .applyViewingTime:
             applyViewingTime(newState.viewingTime,
-                             anmtnTime: GalleryReactor.defaultAnmtnTime)
+                             anmtnTime: GalleryReactor.galleryImageFadeTime)
             return newState
         }
     }
+}
+
+fileprivate extension GalleryReactor {
+    private func setUpViewingTimeStream(_ globalStream: GlobalStream) {
+        self.viewingTimeStream = globalStream.getAndCreate(
+            id: StreamId.vieingTime,
+            defaultValue: .init(id: GalleryReactor.id, item: initialState.viewingTime))
+    }
+    
+    private func observeFeeds(_ feedService: GalleryFeedService) {
+        return feedService.observeFeeds(refreshInterval: GalleryReactor.feedRefreshInterval)
+            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            .map { URL(string: $0.imageUrl)! }
+            .subscribe(onNext: { self.feedBuffer.append($0) })
+            .disposed(by: disposeBag)
+    }
+    
+    private func setUpScheduler() {
+        firstImageScheduler = Observable<Int>
+            .interval(0.1, scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
+            .filter { [weak self] _ in
+                guard let `self` = self else { return false }
+                return !self.feedBuffer.isEmpty
+            }
+            .take(1)
+            .share()
+    }
     
     private func propagatedTime() -> Observable<Mutation> {
-        return viewingTimeStream
+        return viewingTimeStream!
             .filter { $0.id != GalleryReactor.id }
             .map { $0.item }
             .observeOn(MainScheduler.asyncInstance)
@@ -136,28 +135,18 @@ final public class GalleryReactor: Reactor {
                 .just(.applyViewingTime)
                 ])}
     }
-        
-    private func galleryImageUrls() -> Observable<URL> {
-        var model = GalleryFeedModel()
-        return model.galleryFeeds
-            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
-            .do(onNext: { (feedItem) in
-                print(feedItem.title)
-            })
-            .map { URL(string: $0.imageUrl)! }
-    }
     
     private func applyViewingTime(_ with: TimeInterval, anmtnTime: TimeInterval) {
         timerDisposable?.dispose()
         let userScheduling =
             Observable<Int>.interval(with + anmtnTime,
                                      scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
-                .filter { _ in !self.galleyFeed.isEmpty }
-
-        timerDisposable = Observable.merge(userScheduling, firstImageScheduling)
+                .filter { _ in !self.feedBuffer.isEmpty }
+        
+        timerDisposable = Observable.merge(userScheduling, firstImageScheduler)
             .map { _ in
-                let ret = self.galleyFeed.first
-                self.galleyFeed.removeFirst()
+                let ret = self.feedBuffer.first
+                self.feedBuffer.removeFirst()
                 return ret
             }
             .flatMap { Observable.from(optional: $0) }
@@ -166,8 +155,15 @@ final public class GalleryReactor: Reactor {
             .map { GalleyImage(image: $0, imswpAnmtnTime: anmtnTime) }
             .subscribe(onNext: { [weak self] in
                 guard let `self` = self else { return }
-                self.galleyImageStream.onNext($0)
+                self.imageStream.onNext($0)
             })
+    }
+    
+    private func propagateViewingTime(with: ViewingTime) {
+        viewingTimeStream?.onNext(
+            .init(id: GalleryReactor.id,
+                  item: with)
+        )
     }
 }
 
@@ -180,4 +176,12 @@ public struct GalleyImage {
         return lhs.image == rhs.image &&
             lhs.imswpAnmtnTime == rhs.imswpAnmtnTime
     }
+}
+
+fileprivate extension GalleryReactor.State {
+    static let initialState: GalleryReactor.State = .init(
+        viewingTimeLimit: ViewingTimeRange.basic,
+        propagetedViewingTime: nil,
+        viewingTime: ViewingTimeRange.defaultMinTime,
+        galleyImage: .init(image: nil, imswpAnmtnTime: 0))
 }

@@ -28,12 +28,12 @@ extension SwinjectStoryboard {
             return ImageDownloadService()
         }
         
+        defaultContainer.register(GalleryFeedService.self) { _ in
+            return FlickerFeedService()
+        }
+        
         defaultContainer.register(GlobalStream.self) { _ in
             return GlobalStream()
-        }.inObjectScope(.container)
-        
-        defaultContainer.register(ReplaySubject<ViewingTime>.self) { _ in
-            return .create(bufferSize: 1)
         }.inObjectScope(.container)
         
         defaultContainer.register(TicketOfficeReactor.self) { c in
@@ -44,7 +44,7 @@ extension SwinjectStoryboard {
         defaultContainer.register(GalleryReactor.self) { c in
             return .init(globalStream: c.resolve(GlobalStream.self)!,
                          downloadService: c.resolve(FileDownloadService.self)!,
-                         networkStatus: c.resolve(NetworkStatusService.self)!)
+                         feedService: c.resolve(GalleryFeedService.self)!)
         }
      
         defaultContainer.register(GalleryVC.self) { c in

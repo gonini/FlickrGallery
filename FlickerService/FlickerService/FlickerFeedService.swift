@@ -1,26 +1,27 @@
 //
-//  NewsFeedModel.swift
-//  GalleryDomain
+//  FlickerFeedService.swift
+//  FlickerService
 //
-//  Created by 장공의 on 30/03/2019.
+//  Created by 장공의 on 01/04/2019.
 //  Copyright © 2019 gonini. All rights reserved.
 //
 
 import Foundation
 
+import GalleryDomain
 import RxSwift
 import Alamofire
 import RxAlamofire
 import ObjectMapper
 
-struct GalleryFeedModel {
+public struct FlickerFeedService: GalleryFeedService {
     private static let flickerFeedUrl = URL(string: "https://api.flickr.com/services/feeds/photos_public.gne")!
     private let lastPublishedDateStream = BehaviorSubject<Date>(value: .init(timeIntervalSince1970: 0))
     
-    lazy var galleryFeeds = self.filterNewGalleryFeeds()
+    public init() { }
     
-    private func filterNewGalleryFeeds() -> Observable<FeedItem> {
-        return updateGalleryFeedsRepeatedly(publishInterval: 5.0)
+    public func observeFeeds(refreshInterval: TimeInterval) -> Observable<FeedItem> {
+        return updateGalleryFeedsRepeatedly(publishInterval: refreshInterval)
             .withLatestFrom(lastPublishedDateStream) { (feeds, lastPublishedDate) -> [FeedItem] in
                 feeds.filter { $0.publishedDate > lastPublishedDate }
                     .sorted { $0.publishedDate > $1.publishedDate }
@@ -28,8 +29,8 @@ struct GalleryFeedModel {
             .filter { !$0.isEmpty }
             .do(onNext: { self.lastPublishedDateStream.onNext($0.first!.publishedDate) })
             .flatMap({ Observable.from($0) })
-        
     }
+
     
     private func updateGalleryFeedsRepeatedly(publishInterval: RxTimeInterval) -> Observable<[FeedItem]> {
         let timer = Observable<Int>
@@ -49,9 +50,9 @@ struct GalleryFeedModel {
         ]
         
         return RxAlamofire
-            .request(.get, GalleryFeedModel.flickerFeedUrl,
-                           parameters: parm,
-                           encoding: URLEncoding(destination: .queryString))
+            .request(.get, FlickerFeedService.flickerFeedUrl,
+                     parameters: parm,
+                     encoding: URLEncoding(destination: .queryString))
             .responseString()
             .catchError(Observable.error)
             .filter { (res, _) -> Bool in res.statusCode == 200 }
@@ -70,37 +71,5 @@ struct GalleryFeedModel {
                     return []
                 }
         }
-    }
-}
-
-public protocol GalleryFeedService {
-    func observeFeeds(refreshInterval: TimeInterval) -> Observable<FeedItem>
-}
-
-public class FeedItem: Mappable {
-    public var title: String!
-    public var publishedText: String!
-    public var publishedDate: Date!
-    public var media: Media!
-    public var imageUrl: String!
-    
-    required public init?(map: Map) { }
-    
-    public func mapping(map: Map) {
-        title <- map["title"]
-        publishedText <- (map["published"])
-        media <-  map["media"]
-        imageUrl = media.url
-        publishedDate = publishedText.toFlickerFormatDate()
-    }
-}
-
-public class Media: Mappable {
-    public var url: String!
-    
-    required public init?(map: Map) { }
-    
-    public func mapping(map: Map) {
-        url <- map["m"]
     }
 }

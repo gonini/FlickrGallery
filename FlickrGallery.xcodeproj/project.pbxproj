@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		99781BFE225239D600F2FA85 /* GalleryDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99781BFD225239D600F2FA85 /* GalleryDomain.framework */; };
-		99781BFF225239D600F2FA85 /* GalleryDomain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 99781BFD225239D600F2FA85 /* GalleryDomain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		99781C01225239D600F2FA85 /* FlickerService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99781C00225239D600F2FA85 /* FlickerService.framework */; };
-		99781C02225239D600F2FA85 /* FlickerService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 99781C00225239D600F2FA85 /* FlickerService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		99781C0A2252434400F2FA85 /* GalleryDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99781C092252434400F2FA85 /* GalleryDomain.framework */; };
+		99781C0B2252434400F2FA85 /* GalleryDomain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 99781C092252434400F2FA85 /* GalleryDomain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		99781C0D2252434400F2FA85 /* FlickerService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99781C0C2252434400F2FA85 /* FlickerService.framework */; };
+		99781C0E2252434400F2FA85 /* FlickerService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 99781C0C2252434400F2FA85 /* FlickerService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		99842F18224CE49C006C7D9F /* Gallery.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99842F17224CE49C006C7D9F /* Gallery.storyboard */; };
 		99AFD7CE224A58D000C377F0 /* TicketOffice.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99AFD7CD224A58D000C377F0 /* TicketOffice.storyboard */; };
 		99B9297E224A349200295D18 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B9297D224A349200295D18 /* AppDelegate.swift */; };
@@ -23,14 +23,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		99781C03225239D600F2FA85 /* Embed Frameworks */ = {
+		99781C0F2252434500F2FA85 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				99781BFF225239D600F2FA85 /* GalleryDomain.framework in Embed Frameworks */,
-				99781C02225239D600F2FA85 /* FlickerService.framework in Embed Frameworks */,
+				99781C0B2252434400F2FA85 /* GalleryDomain.framework in Embed Frameworks */,
+				99781C0E2252434400F2FA85 /* FlickerService.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -40,8 +40,8 @@
 /* Begin PBXFileReference section */
 		09EB267A135A78E3DDAAA32A /* Pods-FlickrGallery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlickrGallery.debug.xcconfig"; path = "Target Support Files/Pods-FlickrGallery/Pods-FlickrGallery.debug.xcconfig"; sourceTree = "<group>"; };
 		561A6843E1D7877A01A1BF66 /* Pods-FlickrGallery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlickrGallery.release.xcconfig"; path = "Target Support Files/Pods-FlickrGallery/Pods-FlickrGallery.release.xcconfig"; sourceTree = "<group>"; };
-		99781BFD225239D600F2FA85 /* GalleryDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GalleryDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		99781C00225239D600F2FA85 /* FlickerService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlickerService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		99781C092252434400F2FA85 /* GalleryDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GalleryDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		99781C0C2252434400F2FA85 /* FlickerService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlickerService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99842F17224CE49C006C7D9F /* Gallery.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Gallery.storyboard; sourceTree = "<group>"; };
 		99AFD7CD224A58D000C377F0 /* TicketOffice.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TicketOffice.storyboard; sourceTree = "<group>"; };
 		99B9297A224A349200295D18 /* FlickrGallery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrGallery.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,8 +61,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				99D26342224BB85300B94330 /* Pods_FlickrGallery.framework in Frameworks */,
-				99781BFE225239D600F2FA85 /* GalleryDomain.framework in Frameworks */,
-				99781C01225239D600F2FA85 /* FlickerService.framework in Frameworks */,
+				99781C0A2252434400F2FA85 /* GalleryDomain.framework in Frameworks */,
+				99781C0D2252434400F2FA85 /* FlickerService.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,8 +90,8 @@
 		99B92971224A349200295D18 = {
 			isa = PBXGroup;
 			children = (
-				99781C00225239D600F2FA85 /* FlickerService.framework */,
-				99781BFD225239D600F2FA85 /* GalleryDomain.framework */,
+				99781C0C2252434400F2FA85 /* FlickerService.framework */,
+				99781C092252434400F2FA85 /* GalleryDomain.framework */,
 				99B9297C224A349200295D18 /* FlickrGallery */,
 				99B9297B224A349200295D18 /* Products */,
 				7A87EA60BA4A27C8D7C98C81 /* Pods */,
@@ -159,7 +159,7 @@
 				99B92978224A349200295D18 /* Resources */,
 				99AFD79E224A464A00C377F0 /* ShellScript */,
 				424CA7177927460A6CB8C94B /* [CP] Embed Pods Frameworks */,
-				99781C03225239D600F2FA85 /* Embed Frameworks */,
+				99781C0F2252434500F2FA85 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
