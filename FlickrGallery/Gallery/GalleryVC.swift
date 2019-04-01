@@ -48,15 +48,15 @@ final class GalleryVC: UIViewController, StoryboardView {
         let propagetedViewingTime = reactor.state
             .map { $0.propagetedViewingTime }
             .flatMap { Observable.from(optional: $0) }
+            .distinctUntilChanged()
+            .observeOn(MainScheduler.instance)
         
         let viewingTime = viewingTimeSlider.rx
             .timeValue
             .throttle(0.3, scheduler: MainScheduler.instance)
         
         propagetedViewingTime
-            .flatMap { Observable.from(optional: $0) }
-            .distinctUntilChanged()
-            .observeOn(MainScheduler.instance)
+            
             .bind(onNext: { [weak self] in
                 guard let `self` = self else { return }
                 self.viewingTimeSlider.value = Float($0)
