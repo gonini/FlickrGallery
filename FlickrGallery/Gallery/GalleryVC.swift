@@ -63,7 +63,6 @@ final class GalleryVC: UIViewController, StoryboardView {
             .disposed(by: disposeBag)
         
         viewingTime
-            .debug()
             .map(Reactor.Action.exchangeTickets)
             .bind(to: reactor.action)
             .disposed(by: disposeBag)

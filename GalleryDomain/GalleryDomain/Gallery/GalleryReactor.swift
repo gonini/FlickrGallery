@@ -16,7 +16,7 @@ final public class GalleryReactor: Reactor {
     
     private static let id = "GalleryReactor"
     private static let galleryImageFadeTime = 1.0
-    private static let feedRefreshInterval = 5.0
+    private static let feedRefreshInterval = 3.0
     
     private let imageStream = BehaviorSubject<GalleyImage?>(value: nil)
     private let feedBuffer: SynchronizedArray<URL> = .init()
@@ -150,7 +150,6 @@ fileprivate extension GalleryReactor {
                 return ret
             }
             .flatMap { Observable.from(optional: $0) }
-            .debug()
             .flatMap(downloadService.load)
             .map { GalleyImage(image: $0, imswpAnmtnTime: anmtnTime) }
             .subscribe(onNext: { [weak self] in

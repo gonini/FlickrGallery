@@ -14,14 +14,24 @@ import Alamofire
 import RxAlamofire
 import ObjectMapper
 
+public typealias HTTPHeaders = [String: String]
+
 public struct FlickerFeedService: GalleryFeedService {
     private static let flickerFeedUrl = URL(string: "https://api.flickr.com/services/feeds/photos_public.gne")!
+    private static let parm: Parameters = [
+        "tags": "landscape,portrait",
+        "tagmode": "any",
+        "format": "json",
+        "jsoncallback": "?"
+    ]
+    
     private let lastPublishedDateStream = BehaviorSubject<Date>(value: .init(timeIntervalSince1970: 0))
+    private let lastModifiedSubject = BehaviorSubject<String>(value: "")
     
     public init() { }
     
     public func observeFeeds(refreshInterval: TimeInterval) -> Observable<FeedItem> {
-        return updateGalleryFeedsRepeatedly(publishInterval: refreshInterval)
+        return updateGalleryFeedsRepeatedly(refreshInterval)
             .withLatestFrom(lastPublishedDateStream) { (feeds, lastPublishedDate) -> [FeedItem] in
                 feeds.filter { $0.publishedDate > lastPublishedDate }
                     .sorted { $0.publishedDate > $1.publishedDate }
@@ -31,31 +41,31 @@ public struct FlickerFeedService: GalleryFeedService {
             .flatMap({ Observable.from($0) })
     }
 
-    private func updateGalleryFeedsRepeatedly(publishInterval: RxTimeInterval) -> Observable<[FeedItem]> {
+    private func updateGalleryFeedsRepeatedly(_ refreshInterval: RxTimeInterval) -> Observable<[FeedItem]> {
         let timer = Observable<Int>
-            .interval(publishInterval,
+            .interval(refreshInterval,
                       scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
             .startWith(0)
-        
-        return timer.concatMap { _ in self.observeGalleryFeeds() }
+        return timer.withLatestFrom(lastModifiedSubject)
+            .concatMap(observeGalleryFeeds)
     }
     
-    private func observeGalleryFeeds() -> Observable<[FeedItem]> {
-        let parm: Parameters = [
-            "tags": "landscape,portrait",
-            "tagmode": "any",
-            "format": "json",
-            "jsoncallback": "?"
+    private func observeGalleryFeeds(_ lastModifiedDate: String) -> Observable<[FeedItem]> {
+        let headers: HTTPHeaders = [
+            HTTPHeader.ifModifiedSince: lastModifiedDate
         ]
         
         return RxAlamofire
             .request(.get, FlickerFeedService.flickerFeedUrl,
-                     parameters: parm,
-                     encoding: URLEncoding(destination: .queryString))
+                     parameters: FlickerFeedService.parm,
+                     encoding: URLEncoding(destination: .queryString), headers: headers)
             .responseString()
             .catchError(Observable.error)
-            .filter { (res, _) -> Bool in res.statusCode == 200 }
-            .map { (_, data) -> String in
+            .filter { (response, _) -> Bool in response.statusCode == 200 }
+            .map { (response: HTTPURLResponse, data) -> String in
+                if let IMS = response.allHeaderFields[HTTPHeader.lastModified] as! String? {
+                    self.lastModifiedSubject.onNext(IMS)
+                }
                 var ret = data
                 ret.removeFirst()
                 ret.removeLast()
@@ -71,4 +81,9 @@ public struct FlickerFeedService: GalleryFeedService {
                 }
         }
     }
+}
+
+struct HTTPHeader {
+    static let ifModifiedSince = "If-Modified-Since"
+    static let lastModified = "Last-Modified"
 }
