@@ -26,9 +26,19 @@ class TicketOfficeVC: UIViewController, StoryboardView {
     }
     
     func bind(reactor: TicketOfficeReactor) {
+        reactor.state.map { $0.connectionStatus }
+            .filter { !$0 }
+            .observeOn(MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                guard let `self` = self else { return }
+               self.showConnectionFailureAlert()
+            }
+            .disposed(by: disposeBag)
+        
         reactor.state.map { $0.viewingTimeLimit }
             .distinctUntilChanged()
             .map { (Float($0.minTime), Float($0.maxTime)) }
+            .observeOn(MainScheduler.instance)
             .bind(onNext: { [weak self] in
                 guard let `self` = self else { return }
                 
@@ -37,8 +47,10 @@ class TicketOfficeVC: UIViewController, StoryboardView {
             })
             .disposed(by: disposeBag)
         
-        let propagetedViewingTime = reactor.state.map { $0.propagetedViewingTime }
+        let propagetedViewingTime = reactor.state
+            .map { $0.propagetedViewingTime }
             .distinctUntilChanged()
+            .observeOn(MainScheduler.instance)
         
         propagetedViewingTime
             .bind(onNext: { [weak self] in
@@ -77,6 +89,15 @@ class TicketOfficeVC: UIViewController, StoryboardView {
                 self.navigationController?.pushViewController(galleryVC, animated: true)
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func showConnectionFailureAlert() {
+        let alertController = UIAlertController(title: "네트워크가 불안정합니다.", message:
+            "잠시 후 다시 시도해주세요.", preferredStyle: .alert)
+        alertController.addAction(.init(title: "종료하기", style: .cancel, handler: { _ in
+            exit(0)
+        }))
+        self.present(alertController, animated: true)
     }
 }
 

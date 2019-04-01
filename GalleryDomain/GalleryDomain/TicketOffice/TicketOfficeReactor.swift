@@ -16,13 +16,15 @@ final public class TicketOfficeReactor: Reactor {
     private static let id = "TicketOfficeReactor"
     public let initialState: State
     private let viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>
+    private var networkStatus: NetworkStatusService
     private var disposeBag = DisposeBag()
     
     public init(globalStream: GlobalStream, networkStatus: NetworkStatusService) {
         initialState = State(
             viewingTimeLimit: ViewingTimeRange.basic,
             propagetedViewingTime: ViewingTimeRange.defaultMinTime,
-            viewingTime: ViewingTimeRange.defaultMinTime
+            viewingTime: ViewingTimeRange.defaultMinTime,
+            connectionStatus: true
         )
         
         let defaultViewingTime =
@@ -31,18 +33,15 @@ final public class TicketOfficeReactor: Reactor {
         self.viewingTimeStream = globalStream
             .getAndCreate(id: StreamId.vieingTime,
                           defaultValue: defaultViewingTime)
-                
-        networkStatus.observeNetworkStatus(interval: 1.0)
-            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
-            .subscribe(onNext: { (status) in
-                print(status)
-            }).disposed(by: disposeBag)
+        
+        self.networkStatus = networkStatus
     }
     
     public struct State {
         public var viewingTimeLimit: ViewingTimeRange
         public var propagetedViewingTime: ViewingTime
         public var viewingTime: ViewingTime
+        public var connectionStatus: Bool
     }
     
     public enum Action {
@@ -54,6 +53,7 @@ final public class TicketOfficeReactor: Reactor {
         case updateViewingTime(with: ViewingTime)
         case propagateViewingTime
         case setPropagatedTime(with: ViewingTime)
+        case networkConnectionFailed
     }
     
     public func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
@@ -67,7 +67,7 @@ final public class TicketOfficeReactor: Reactor {
                 .just(Mutation.updateViewingTime(with: time))
                 ])}
         
-        return .merge(mutation, propagated)
+        return .merge(mutation, propagated, networkConnectionFailed())
     }
     
     public func mutate(action: Action) -> Observable<Mutation> {
@@ -95,12 +95,17 @@ final public class TicketOfficeReactor: Reactor {
             guard newState.viewingTime != with else { return newState }
             newState.propagetedViewingTime = with
             return newState
+        case .networkConnectionFailed:
+            newState.connectionStatus = false
+            return newState
         }
     }
     
-    private func createViewingTimeItem(_ with: ViewingTime) -> GlobalStreamItem<ViewingTime> {
-        return .init(id: TicketOfficeReactor.id,
-              item: with)
+    private func networkConnectionFailed() -> Observable<Mutation> {
+        return networkStatus.observeNetworkStatus(interval: 1.0)
+            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            .filter { $0 == .none }
+            .map { _ in Mutation.networkConnectionFailed }
     }
 }
 
