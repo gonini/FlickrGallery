@@ -31,7 +31,11 @@ public struct FlickerFeedService: GalleryFeedService {
     public init() { }
     
     public func observeFeeds(refreshInterval: TimeInterval) -> Observable<FeedItem> {
-        return updateGalleryFeedsRepeatedly(refreshInterval)
+        return observeOnlyNewFeeds(refreshInterval)
+    }
+    
+    private func observeOnlyNewFeeds(_ refreshInterval: RxTimeInterval) -> Observable<FeedItem> {
+        return pollFeedsRepeatedly(refreshInterval)
             .withLatestFrom(lastPublishedDateStream) { (feeds, lastPublishedDate) -> [FeedItem] in
                 feeds.filter { $0.publishedDate > lastPublishedDate }
                     .sorted { $0.publishedDate > $1.publishedDate }
@@ -40,17 +44,17 @@ public struct FlickerFeedService: GalleryFeedService {
             .do(onNext: { self.lastPublishedDateStream.onNext($0.first!.publishedDate) })
             .flatMap({ Observable.from($0) })
     }
-
-    private func updateGalleryFeedsRepeatedly(_ refreshInterval: RxTimeInterval) -> Observable<[FeedItem]> {
+    
+    private func pollFeedsRepeatedly(_ refreshInterval: RxTimeInterval) -> Observable<[FeedItem]> {
         let timer = Observable<Int>
             .interval(refreshInterval,
                       scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
             .startWith(0)
         return timer.withLatestFrom(lastModifiedSubject)
-            .concatMap(observeGalleryFeeds)
+            .concatMap(requestFeeds)
     }
     
-    private func observeGalleryFeeds(_ lastModifiedDate: String) -> Observable<[FeedItem]> {
+    private func requestFeeds(_ lastModifiedDate: String) -> Observable<[FeedItem]> {
         let headers: HTTPHeaders = [
             HTTPHeader.ifModifiedSince: lastModifiedDate
         ]
@@ -59,26 +63,32 @@ public struct FlickerFeedService: GalleryFeedService {
             .request(.get, FlickerFeedService.flickerFeedUrl,
                      parameters: FlickerFeedService.parm,
                      encoding: URLEncoding(destination: .queryString), headers: headers)
+            .validate(statusCode: 200...200)
             .responseString()
             .catchError(Observable.error)
-            .filter { (response, _) -> Bool in response.statusCode == 200 }
-            .map { (response: HTTPURLResponse, data) -> String in
-                if let IMS = response.allHeaderFields[HTTPHeader.lastModified] as! String? {
-                    self.lastModifiedSubject.onNext(IMS)
+            .map { (response, result) -> String in
+                self.updateIMS(response)
+                return result }
+            .map { $0.removeBothEnds() }
+            .debug()
+            .map { result -> [String: Any] in
+                guard let data = result.data(using: .utf8) else { return .init() }
+                guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                    return .init()
                 }
-                var ret = data
-                ret.removeFirst()
-                ret.removeLast()
-                return ret
+                return json
             }
-            .map { $0.data(using: .utf8)! }
-            .map { try JSONSerialization.jsonObject(with: $0) as! [String: Any] }
             .map { json -> [FeedItem] in
-                if let feeds = Mapper<FeedItem>().mapArray(JSONObject: json["items"]) {
-                    return feeds
-                } else {
-                    return []
+                guard let feeds = Mapper<FeedItem>().mapArray(JSONObject: json["items"]) else {
+                    return .init()
                 }
+                return feeds
+        }
+    }
+    
+    private func updateIMS(_ response: HTTPURLResponse) {
+        if let IMS = response.allHeaderFields[HTTPHeader.lastModified] as! String? {
+            self.lastModifiedSubject.onNext(IMS)
         }
     }
 }
@@ -86,4 +96,14 @@ public struct FlickerFeedService: GalleryFeedService {
 struct HTTPHeader {
     static let ifModifiedSince = "If-Modified-Since"
     static let lastModified = "Last-Modified"
+}
+
+extension String {
+    func removeBothEnds() -> String {
+        guard self.count > 2 else { return self }
+        var ret = self
+        ret.removeFirst()
+        ret.removeLast()
+        return ret
+    }
 }
