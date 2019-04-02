@@ -35,16 +35,22 @@ extension SwinjectStoryboard {
         defaultContainer.register(GlobalStreamService.self) { _ in
             return TemporaryGlobalStream()
         }.inObjectScope(.container)
+     
+        defaultContainer.register(LogService.self) { _ in
+            return BasicLogger()
+        }
         
         defaultContainer.register(TicketOfficeReactor.self) { c in
             return .init(globalStream: c.resolve(GlobalStreamService.self)!,
-                         networkStatus: c.resolve(NetworkStatusService.self)!)
+                         networkStatus: c.resolve(NetworkStatusService.self)!,
+                         logger: c.resolve(LogService.self)!)
         }
-     
+        
         defaultContainer.register(GalleryReactor.self) { c in
             return .init(globalStream: c.resolve(GlobalStreamService.self)!,
                          downloadService: c.resolve(FileDownloadService.self)!,
-                         feedService: c.resolve(GalleryFeedService.self)!)
+                         feedService: c.resolve(GalleryFeedService.self)!,
+                         logger: c.resolve(LogService.self)!)
         }
      
         defaultContainer.register(GalleryVC.self) { c in

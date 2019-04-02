@@ -92,8 +92,9 @@ class TicketOfficeVC: UIViewController, StoryboardView {
     }
     
     private func showConnectionFailureAlert() {
-        let alertController = UIAlertController(title: "네트워크가 불안정합니다.", message:
-            "잠시 후 다시 시도해주세요.", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "네트워크가 불안정합니다.",
+                                                message: "잠시 후 다시 시도해주세요.",
+                                                preferredStyle: .alert)
         alertController.addAction(.init(title: "종료하기", style: .cancel, handler: { _ in
             exit(0)
         }))

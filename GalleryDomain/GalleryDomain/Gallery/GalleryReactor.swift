@@ -23,6 +23,7 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
     private let imageStream = BehaviorSubject<GalleyImage?>(value: nil)
     private let feedBuffer: SynchronizedArray<URL> = .init()
     private let downloadService: FileDownloadService
+    private let logger: LogService
     
     private var firstImageScheduler: Observable<Int> = .empty()
     private var timerDisposable: Disposable?
@@ -30,8 +31,10 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
     
     public init(globalStream: GlobalStreamService,
                 downloadService: FileDownloadService,
-                feedService: GalleryFeedService) {
+                feedService: GalleryFeedService,
+                logger: LogService) {
         self.downloadService = downloadService
+        self.logger = logger
         initialState = State.initialState
         observeFeeds(feedService)
         setUpScheduler()
@@ -49,6 +52,8 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
     
     public enum Action {
         case exchangeTickets(with: ViewingTime)
+        case apperScreen
+        case disApperScreen
     }
     
     public enum Mutation {
@@ -74,6 +79,10 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
                 .just(.propagateViewingTime),
                 .just(.applyViewingTime)
                 ])
+        case .apperScreen:
+            return .empty()
+        case .disApperScreen:
+            return .empty()
         }
     }
     
@@ -106,9 +115,12 @@ fileprivate extension GalleryReactor {
         return feedService.observeFeeds(refreshInterval: GalleryReactor.feedRefreshInterval)
             .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .map { URL(string: $0.imageUrl)! }
-            .subscribe(onNext: { self.feedBuffer.append($0) },
-                       onError: { _ in
-                        // 에러 처리하기
+            .subscribe(onNext: { [weak self] url in
+                guard let `self` = self else { return }
+                self.feedBuffer.append(url)
+            }, onError: { [weak self] error in
+                guard let `self` = self else { return }
+                self.logger.log(error)
             })
             .disposed(by: disposeBag)
     }
@@ -156,8 +168,9 @@ fileprivate extension GalleryReactor {
             .subscribe(onNext: { [weak self] in
                 guard let `self` = self else { return }
                 self.imageStream.onNext($0)
-                }, onError: { _ in
-                    // 에러 처리하기
+                }, onError: { [weak self] error in
+                    guard let `self` = self else { return }
+                    self.logger.log(error)
             })
     }
 }

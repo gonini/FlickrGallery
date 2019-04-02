@@ -17,11 +17,16 @@ final public class TicketOfficeReactor: Reactor, ViewingTimeStream {
     
     private static let id = "TicketOfficeReactor"
     
+    private let logger: LogService
+    
     private var networkStatus: NetworkStatusService
     private var disposeBag = DisposeBag()
     
-    public init(globalStream: GlobalStreamService, networkStatus: NetworkStatusService) {
+    public init(globalStream: GlobalStreamService,
+                networkStatus: NetworkStatusService,
+                logger: LogService) {
         initialState = State.initialState
+        self.logger = logger
         self.networkStatus = networkStatus
         setUpViewingTimeStream(globalStream,
                                itemId: TicketOfficeReactor.id,
