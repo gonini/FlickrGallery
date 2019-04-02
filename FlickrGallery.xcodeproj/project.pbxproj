@@ -12,6 +12,9 @@
 		99781C0D2252434400F2FA85 /* FlickerService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99781C0C2252434400F2FA85 /* FlickerService.framework */; };
 		99781C0E2252434400F2FA85 /* FlickerService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 99781C0C2252434400F2FA85 /* FlickerService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		99842F18224CE49C006C7D9F /* Gallery.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99842F17224CE49C006C7D9F /* Gallery.storyboard */; };
+		9992C90922536C9B00461E8C /* UIImageView+Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9992C90822536C9B00461E8C /* UIImageView+Load.swift */; };
+		9992C90C22536D3A00461E8C /* ViewingTimeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9992C90B22536D3A00461E8C /* ViewingTimeSlider.swift */; };
+		9992C90E22536D5000461E8C /* Reactive+UISlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9992C90D22536D5000461E8C /* Reactive+UISlider.swift */; };
 		99AFD7CE224A58D000C377F0 /* TicketOffice.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99AFD7CD224A58D000C377F0 /* TicketOffice.storyboard */; };
 		99B9297E224A349200295D18 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B9297D224A349200295D18 /* AppDelegate.swift */; };
 		99B92980224A349200295D18 /* TicketOfficeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B9297F224A349200295D18 /* TicketOfficeVC.swift */; };
@@ -43,6 +46,9 @@
 		99781C092252434400F2FA85 /* GalleryDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GalleryDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99781C0C2252434400F2FA85 /* FlickerService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlickerService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99842F17224CE49C006C7D9F /* Gallery.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Gallery.storyboard; sourceTree = "<group>"; };
+		9992C90822536C9B00461E8C /* UIImageView+Load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Load.swift"; sourceTree = "<group>"; };
+		9992C90B22536D3A00461E8C /* ViewingTimeSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewingTimeSlider.swift; sourceTree = "<group>"; };
+		9992C90D22536D5000461E8C /* Reactive+UISlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reactive+UISlider.swift"; sourceTree = "<group>"; };
 		99AFD7CD224A58D000C377F0 /* TicketOffice.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TicketOffice.storyboard; sourceTree = "<group>"; };
 		99B9297A224A349200295D18 /* FlickrGallery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrGallery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99B9297D224A349200295D18 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -78,6 +84,23 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		9992C90722536C7F00461E8C /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				9992C90822536C9B00461E8C /* UIImageView+Load.swift */,
+				9992C90D22536D5000461E8C /* Reactive+UISlider.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		9992C90A22536D2E00461E8C /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				9992C90B22536D3A00461E8C /* ViewingTimeSlider.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		99AFD7CA224A586500C377F0 /* TicketOffice */ = {
 			isa = PBXGroup;
 			children = (
@@ -110,8 +133,10 @@
 		99B9297C224A349200295D18 /* FlickrGallery */ = {
 			isa = PBXGroup;
 			children = (
+				9992C90A22536D2E00461E8C /* Common */,
 				99AFD7CA224A586500C377F0 /* TicketOffice */,
 				99D26343224CE3EF00B94330 /* Gallery */,
+				9992C90722536C7F00461E8C /* Extension */,
 				99B92994224A363F00295D18 /* Supporting Files */,
 				99B92984224A349500295D18 /* Assets.xcassets */,
 				99B92986224A349500295D18 /* LaunchScreen.storyboard */,
@@ -305,9 +330,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				99B92980224A349200295D18 /* TicketOfficeVC.swift in Sources */,
+				9992C90C22536D3A00461E8C /* ViewingTimeSlider.swift in Sources */,
 				99DDEC8C224B986F0090D535 /* CompositionRoot.swift in Sources */,
+				9992C90922536C9B00461E8C /* UIImageView+Load.swift in Sources */,
 				99B9297E224A349200295D18 /* AppDelegate.swift in Sources */,
 				99D26347224CE45200B94330 /* GalleryVC.swift in Sources */,
+				9992C90E22536D5000461E8C /* Reactive+UISlider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

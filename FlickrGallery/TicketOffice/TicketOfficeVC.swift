@@ -14,12 +14,12 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class TicketOfficeVC: UIViewController, StoryboardView {
+class TicketOfficeVC: UIViewController, StoryboardView, ViewingTimeSlider {
     var disposeBag = DisposeBag()
     var lazyGalleryVC: GalleryVCLazyHolder?
     
-    @IBOutlet weak var viewingTimeSlider: UISlider!
-    @IBOutlet weak var enterGalleryButton: UIButton!
+    @IBOutlet var viewingTimeSlider: UISlider!
+    @IBOutlet var enterGalleryButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,16 +35,8 @@ class TicketOfficeVC: UIViewController, StoryboardView {
             }
             .disposed(by: disposeBag)
         
-        reactor.state.map { $0.viewingTimeLimit }
-            .distinctUntilChanged()
-            .map { (Float($0.minTime), Float($0.maxTime)) }
-            .observeOn(MainScheduler.instance)
-            .bind(onNext: { [weak self] in
-                guard let `self` = self else { return }
-                
-                self.viewingTimeSlider.minimumValue = $0.0
-                self.viewingTimeSlider.maximumValue = $0.1
-            })
+        bindRange(rangeStream: reactor.state
+            .map { $0.viewingTimeLimit })
             .disposed(by: disposeBag)
         
         let propagetedViewingTime = reactor.state
@@ -86,6 +78,7 @@ class TicketOfficeVC: UIViewController, StoryboardView {
         galleryButtonTap
             .subscribe(onNext: { [weak self] _ in
                 guard let `self` = self, let galleryVC = self.lazyGalleryVC?.galleryVC.instance else { return }
+                
                 self.navigationController?.pushViewController(galleryVC, animated: true)
             })
             .disposed(by: disposeBag)
@@ -95,16 +88,10 @@ class TicketOfficeVC: UIViewController, StoryboardView {
         let alertController = UIAlertController(title: "네트워크가 불안정합니다.",
                                                 message: "잠시 후 다시 시도해주세요.",
                                                 preferredStyle: .alert)
-        alertController.addAction(.init(title: "종료하기", style: .cancel, handler: { _ in
+        
+        alertController.addAction(.init(title: "종료하기", style: .cancel) { _ in
             exit(0)
-        }))
+        })
         self.present(alertController, animated: true)
-    }
-}
-
-extension Reactive where Base: UISlider {
-    var timeValue: ControlEvent<ViewingTime> {
-        let source = base.rx.value.map { ViewingTime(exactly: round($0))! }
-        return ControlEvent(events: source)
     }
 }

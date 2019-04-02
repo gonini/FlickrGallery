@@ -12,12 +12,12 @@ import ReactorKit
 import RxSwift
 import GalleryDomain
 
-final class GalleryVC: UIViewController, StoryboardView {
+final class GalleryVC: UIViewController, StoryboardView, ViewingTimeSlider {
     var disposeBag = DisposeBag()
     
-    @IBOutlet weak var viewingTimeSlider: UISlider!
-    @IBOutlet weak var viewingTimeLabel: UILabel!
-    @IBOutlet weak var artImageView: UIImageView!
+    @IBOutlet var viewingTimeSlider: UISlider!
+    @IBOutlet var viewingTimeLabel: UILabel!
+    @IBOutlet var artImageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,15 +33,8 @@ final class GalleryVC: UIViewController, StoryboardView {
                 self.artImageView.load(data: image, duration: $0.imswpAnmtnTime)
             }).disposed(by: disposeBag)
         
-        reactor.state.map { $0.viewingTimeLimit }
-            .distinctUntilChanged()
-            .map { (Float($0.minTime), Float($0.maxTime)) }
-            .observeOn(MainScheduler.instance)
-            .bind(onNext: { [weak self] in
-                guard let `self` = self else { return }
-                self.viewingTimeSlider.minimumValue = $0.0
-                self.viewingTimeSlider.maximumValue = $0.1
-            })
+        bindRange(rangeStream: reactor.state
+            .map { $0.viewingTimeLimit })
             .disposed(by: disposeBag)
         
         let propagetedViewingTime = reactor.state
@@ -75,36 +68,4 @@ final class GalleryVC: UIViewController, StoryboardView {
                 self.viewingTimeLabel.text = title
             }.disposed(by: disposeBag)    
     }
-}
-
-extension UIImageView {
-    func load(data: Data, duration: TimeInterval) {
-        DispatchQueue.global().async {
-            guard let image = UIImage(data: data) else { return  }
-            DispatchQueue.main.async { [weak self] in
-                guard let `self` = self else { return }
-                self.fadeOut(duration) { _ in
-                    self.image = image
-                    self.fadeIn(duration)
-                }
-            }
-        }
-    }
-    
-    // https://stackoverflow.com/questions/28288476/fade-in-and-fade-out-in-animation-swift
-    func fadeIn(_ duration: TimeInterval = 0.5,
-                delay: TimeInterval = 0.0,
-                completion: @escaping ((Bool) -> Void) = {(finished: Bool) -> Void in}) {
-        UIView.animate(withDuration: duration, delay: delay, options: UIView.AnimationOptions.curveEaseIn, animations: {
-            self.alpha = 1.0
-        }, completion: completion)  }
-    
-    func fadeOut(_ duration: TimeInterval = 0.5,
-                 delay: TimeInterval = 0.0,
-                 completion: @escaping (Bool) -> Void = {(finished: Bool) -> Void in}) {
-        UIView.animate(withDuration: duration, delay: delay, options: UIView.AnimationOptions.curveEaseIn, animations: {
-            self.alpha = 0.0
-        }, completion: completion)
-    }
-        
 }

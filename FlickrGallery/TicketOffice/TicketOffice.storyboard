@@ -260,7 +260,7 @@
                     <navigationItem key="navigationItem" id="wK5-k6-OzW"/>
                     <connections>
                         <outlet property="enterGalleryButton" destination="w24-mH-N7p" id="c35-Jm-Uf7"/>
-                        <outlet property="viewingTimeSlider" destination="8fn-i4-NsB" id="hSm-Su-oYY"/>
+                        <outlet property="viewingTimeSlider" destination="8fn-i4-NsB" id="YPz-DI-Nmo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WMx-LW-UNz" userLabel="First Responder" sceneMemberID="firstResponder"/>
