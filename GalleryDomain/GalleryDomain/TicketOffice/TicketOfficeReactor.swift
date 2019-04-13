@@ -15,7 +15,7 @@ final public class TicketOfficeReactor: Reactor, ViewingTimeStream {
     
     var viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>?
     
-    private static let id = "TicketOfficeReactor"
+    private static let streamId = "TicketOfficeReactor"
     
     private let logger: LogService
     
@@ -29,7 +29,7 @@ final public class TicketOfficeReactor: Reactor, ViewingTimeStream {
         self.logger = logger
         self.networkStatus = networkStatus
         setUpViewingTimeStream(globalStream,
-                               itemId: TicketOfficeReactor.id,
+                               itemId: TicketOfficeReactor.streamId,
                                initialViewingTime: initialState.viewingTime)
     }
     
@@ -54,15 +54,15 @@ final public class TicketOfficeReactor: Reactor, ViewingTimeStream {
     
     public func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
         let propagated = viewingTimeStream!
-            .filter { $0.id != TicketOfficeReactor.id }
+            .filter { $0.streamId != TicketOfficeReactor.streamId }
             .map { $0.item }
             .observeOn(MainScheduler.asyncInstance)
             .distinctUntilChanged()
             .flatMap { time in return Observable<Mutation>.concat([
                 .just(Mutation.setPropagatedTime(with: time)),
                 .just(Mutation.updateViewingTime(with: time))
-                ])}
-        
+                ])
+            }
         return .merge(mutation, propagated, networkConnectionFailed())
     }
     
@@ -82,7 +82,7 @@ final public class TicketOfficeReactor: Reactor, ViewingTimeStream {
             newState.viewingTime = with
             return newState
         case .propagateViewingTime:
-            propagateViewingTime(itemId: TicketOfficeReactor.id,
+            propagateViewingTime(itemId: TicketOfficeReactor.streamId,
                                  with: newState.viewingTime)
             return newState
         case let .setPropagatedTime(with):

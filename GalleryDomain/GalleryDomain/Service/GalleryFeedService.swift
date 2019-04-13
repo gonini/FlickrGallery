@@ -29,7 +29,7 @@ public class FeedItem: Mappable {
     public func mapping(map: Map) {
         title <- map["title"]
         publishedText <- (map["published"])
-        media <-  map["media"]
+        media <- map["media"]
         imageUrl = media.url
         publishedDate = publishedText.toFlickerFormatDate()
     }

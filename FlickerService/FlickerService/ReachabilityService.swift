@@ -33,7 +33,6 @@ public struct ReachabilityService: NetworkStatusService {
                     return .none
                 }
                 return .reachable
-        }
-        .distinctUntilChanged()
+            }.distinctUntilChanged()
     }
 }

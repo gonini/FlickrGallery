@@ -68,7 +68,8 @@ public struct FlickerFeedService: GalleryFeedService {
             .catchError(Observable.error)
             .map { (response, result) -> String in
                 self.updateIMS(response)
-                return result }
+                return result
+            }
             .map { $0.removeBothEnds() }
             .map { result -> [String: Any] in
                 guard let data = result.data(using: .utf8) else { return .init() }
@@ -82,11 +83,11 @@ public struct FlickerFeedService: GalleryFeedService {
                     return .init()
                 }
                 return feeds
-        }
+            }
     }
     
     private func updateIMS(_ response: HTTPURLResponse) {
-        if let IMS = response.allHeaderFields[HTTPHeader.lastModified] as! String? {
+        if let IMS = response.allHeaderFields[HTTPHeader.lastModified] as? String {
             self.lastModifiedSubject.onNext(IMS)
         }
     }

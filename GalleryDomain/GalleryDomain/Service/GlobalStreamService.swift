@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 
 public protocol GlobalStreamService {
-    func getAndCreate<T>(id: StreamId, defaultValue: GlobalStreamItem<T>) -> BehaviorSubject<GlobalStreamItem<T>>
+    func getAndCreate<T>(streamId: StreamId, defaultValue: GlobalStreamItem<T>) -> BehaviorSubject<GlobalStreamItem<T>>
 }
 
 public enum StreamId {
@@ -18,7 +18,7 @@ public enum StreamId {
 }
 
 public struct GlobalStreamItem<T> {
-    var id: String
+    var streamId: String
     var item: T
 }
 
@@ -29,13 +29,17 @@ public class TemporaryGlobalStream: GlobalStreamService {
     
     // 에러 처리 전혀 안되어 있음..
     // 여유 시간 생기면 수정...
-    public func getAndCreate<T>(id: StreamId, defaultValue: GlobalStreamItem<T>) ->
+    public func getAndCreate<T>(streamId: StreamId, defaultValue: GlobalStreamItem<T>) ->
         BehaviorSubject<GlobalStreamItem<T>> {
-        if streamTable.keys.contains(id) {
-            return streamTable[id] as! BehaviorSubject<GlobalStreamItem<T>>
-        }
-        let ret = BehaviorSubject<GlobalStreamItem<T>>(value: defaultValue)
-        streamTable[id] = ret
-        return ret
+            guard streamTable.keys.contains(streamId) else {
+                let ret = BehaviorSubject<GlobalStreamItem<T>>(value: defaultValue)
+                streamTable[streamId] = ret
+                return ret
+            }
+        
+            if let ret = streamTable[streamId] as? BehaviorSubject<GlobalStreamItem<T>> {
+                return ret
+            }
+            fatalError("invalid stream id as an argument.")
     }
 }

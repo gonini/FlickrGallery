@@ -20,13 +20,13 @@ extension ViewingTimeStream {
                                 itemId: String,
                                 initialViewingTime: ViewingTime) {
         self.viewingTimeStream = globalStream.getAndCreate(
-            id: StreamId.vieingTime,
-            defaultValue: .init(id: itemId, item: initialViewingTime))
+            streamId: StreamId.vieingTime,
+            defaultValue: .init(streamId: itemId, item: initialViewingTime))
     }
     
     func propagateViewingTime(itemId: String, with: ViewingTime) {
         viewingTimeStream?.onNext(
-            .init(id: itemId,
+            .init(streamId: itemId,
                   item: with)
         )
     }

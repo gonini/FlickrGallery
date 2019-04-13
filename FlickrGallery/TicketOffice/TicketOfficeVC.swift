@@ -65,8 +65,8 @@ class TicketOfficeVC: UIViewController, StoryboardView, ViewingTimeSlider {
             .subscribe { [weak self] in
                 guard let `self` = self, let title = $0.element else { return }
                 self.enterGalleryButton.setTitle(title, for: .normal)
-        }.disposed(by: disposeBag)
-        
+            }.disposed(by: disposeBag)
+
         let galleryButtonTap = enterGalleryButton.rx.tap
             .debounce(0.3, scheduler: MainScheduler.instance)
         

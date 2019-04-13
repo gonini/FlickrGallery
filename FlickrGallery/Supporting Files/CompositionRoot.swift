@@ -40,23 +40,26 @@ extension SwinjectStoryboard {
             return BasicLogger()
         }
         
-        defaultContainer.register(TicketOfficeReactor.self) { c in
-            return .init(globalStream: c.resolve(GlobalStreamService.self)!,
-                         networkStatus: c.resolve(NetworkStatusService.self)!,
-                         logger: c.resolve(LogService.self)!)
+        defaultContainer.register(TicketOfficeReactor.self) { container in
+            return .init(globalStream: container.resolve(GlobalStreamService.self)!,
+                         networkStatus: container.resolve(NetworkStatusService.self)!,
+                         logger: container.resolve(LogService.self)!)
         }
         
-        defaultContainer.register(GalleryReactor.self) { c in
-            return .init(globalStream: c.resolve(GlobalStreamService.self)!,
-                         downloadService: c.resolve(FileDownloadService.self)!,
-                         feedService: c.resolve(GalleryFeedService.self)!,
-                         logger: c.resolve(LogService.self)!)
+        defaultContainer.register(GalleryReactor.self) { container in
+            return .init(globalStream: container.resolve(GlobalStreamService.self)!,
+                         downloadService: container.resolve(FileDownloadService.self)!,
+                         feedService: container.resolve(GalleryFeedService.self)!,
+                         logger: container.resolve(LogService.self)!)
         }
      
-        defaultContainer.register(GalleryVC.self) { c in
+        defaultContainer.register(GalleryVC.self) { container in
             let storyboard = UIStoryboard(name: "Gallery", bundle: nil)
-            let ret = storyboard.instantiateViewController(withIdentifier: "GalleryVC") as! GalleryVC
-            ret.reactor = c.resolve(GalleryReactor.self)
+            guard let ret = storyboard.instantiateViewController(withIdentifier: "GalleryVC") as? GalleryVC else {
+                fatalError("casting failed")
+            }
+            
+            ret.reactor = container.resolve(GalleryReactor.self)
             return ret
         }
         
@@ -64,9 +67,9 @@ extension SwinjectStoryboard {
             return .init(galleryVC: $0.resolve(Lazy<GalleryVC>.self)!)
         }
         
-        defaultContainer.storyboardInitCompleted(TicketOfficeVC.self) { c, r in
-            r.reactor = c.resolve(TicketOfficeReactor.self)
-            r.lazyGalleryVC = c.resolve(GalleryVCLazyHolder.self)
+        defaultContainer.storyboardInitCompleted(TicketOfficeVC.self) { container, resolver in
+            resolver.reactor = container.resolve(TicketOfficeReactor.self)
+            resolver.lazyGalleryVC = container.resolve(GalleryVCLazyHolder.self)
         }
     }
 }

@@ -16,7 +16,7 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
     
     var viewingTimeStream: BehaviorSubject<GlobalStreamItem<ViewingTime>>?
     
-    private static let id = "GalleryReactor"
+    private static let streamId = "GalleryReactor"
     private static let galleryImageFadeTime = 1.0
     private static let feedRefreshInterval = 3.0
     
@@ -39,7 +39,7 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
         observeFeeds(feedService)
         setUpScheduler()
         setUpViewingTimeStream(globalStream,
-                               itemId: GalleryReactor.id,
+                               itemId: GalleryReactor.streamId,
                                initialViewingTime: initialState.viewingTime)
     }
     
@@ -96,7 +96,7 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
             newState.propagetedViewingTime = with
             return newState
         case .propagateViewingTime:
-            propagateViewingTime(itemId: GalleryReactor.id,
+            propagateViewingTime(itemId: GalleryReactor.streamId,
                                  with: newState.viewingTime)
             return newState
         case let .setArtImage(with):
@@ -138,7 +138,7 @@ fileprivate extension GalleryReactor {
     
     private func propagatedTime() -> Observable<Mutation> {
         return viewingTimeStream!
-            .filter { $0.id != GalleryReactor.id }
+            .filter { $0.streamId != GalleryReactor.streamId }
             .map { $0.item }
             .observeOn(MainScheduler.asyncInstance)
             .distinctUntilChanged()
@@ -146,7 +146,8 @@ fileprivate extension GalleryReactor {
                 .just(.setPropagatedTime(with: time)),
                 .just(.setViewingTime(with: time)),
                 .just(.applyViewingTime)
-                ])}
+                ])
+            }
     }
     
     private func applyViewingTime(_ with: TimeInterval, anmtnTime: TimeInterval) {

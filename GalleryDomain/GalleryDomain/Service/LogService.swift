@@ -50,11 +50,16 @@ public struct BasicLogger: LogService {
 extension LogLevel {
     var osLogLevel: OSLogType {
         switch self {
-        case .info: return .info
-        case .debug: return .debug
-        case .error: return .error
-        case .fault: return .fault
-        default: return .default
+        case .info:
+            return .info
+        case .debug:
+            return .debug
+        case .error:
+            return .error
+        case .fault:
+            return .fault
+        default:
+            return .default
         }
     }
 }
