@@ -16,7 +16,7 @@ import ObjectMapper
 
 public typealias HTTPHeaders = [String: String]
 
-public struct FlickerFeedService: GalleryFeedService {
+public class FlickerFeedService: GalleryFeedService {
     private static let flickerFeedUrl = URL(string: "https://api.flickr.com/services/feeds/photos_public.gne")!
     private static let parm: Parameters = [
         "tags": "landscape,portrait",
@@ -25,12 +25,14 @@ public struct FlickerFeedService: GalleryFeedService {
         "jsoncallback": "?"
     ]
     
-    private let lastPublishedDateStream = BehaviorSubject<Date>(value: .init(timeIntervalSince1970: 0))
-    private let lastModifiedSubject = BehaviorSubject<String>(value: "")
+    private var lastPublishedDateStream: BehaviorSubject<Date>!
+    private var lastModifiedSubject: BehaviorSubject<String>!
     
     public init() { }
     
     public func observeFeeds(refreshInterval: TimeInterval) -> Observable<FeedItem> {
+        self.lastPublishedDateStream = .init(value: .init(timeIntervalSince1970: 0))
+        self.lastModifiedSubject = .init(value: "")
         return observeOnlyNewFeeds(refreshInterval)
     }
     

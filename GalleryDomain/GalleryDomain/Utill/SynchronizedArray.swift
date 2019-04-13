@@ -69,4 +69,10 @@ public extension SynchronizedArray {
             }
         }
     }
+    
+    func removeAll() {
+        queue.async(flags: .barrier) {
+            self.array.removeAll()
+        }
+    }
 }

@@ -16,7 +16,7 @@ import ReactorKit
 
 class TicketOfficeVC: UIViewController, StoryboardView, ViewingTimeSlider {
     var disposeBag = DisposeBag()
-    var lazyGalleryVC: GalleryVCLazyHolder?
+    var galleryVC: GalleryVC?
     
     @IBOutlet var viewingTimeSlider: UISlider!
     @IBOutlet var enterGalleryButton: UIButton!
@@ -77,7 +77,7 @@ class TicketOfficeVC: UIViewController, StoryboardView, ViewingTimeSlider {
         
         galleryButtonTap
             .subscribe(onNext: { [weak self] _ in
-                guard let `self` = self, let galleryVC = self.lazyGalleryVC?.galleryVC.instance else { return }
+                guard let `self` = self, let galleryVC = self.galleryVC else { return }
                 
                 self.navigationController?.pushViewController(galleryVC, animated: true)
             })

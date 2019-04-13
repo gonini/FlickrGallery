@@ -24,6 +24,16 @@ final class GalleryVC: UIViewController, StoryboardView, ViewingTimeSlider {
     }
     
     func bind(reactor: GalleryReactor) {
+        rx.viewDidAppear
+            .map { _ in Reactor.Action.appearScreen }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        rx.viewDidDisappear
+            .map { _ in Reactor.Action.disAppearScreen }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         reactor.state.map { $0.galleyImage }
             .distinctUntilChanged { $0 == $1 }
             .observeOn(MainScheduler.instance)
@@ -66,6 +76,6 @@ final class GalleryVC: UIViewController, StoryboardView, ViewingTimeSlider {
             .subscribe { [weak self] in
                 guard let `self` = self, let title = $0.element else { return }
                 self.viewingTimeLabel.text = title
-            }.disposed(by: disposeBag)    
+            }.disposed(by: disposeBag)
     }
 }

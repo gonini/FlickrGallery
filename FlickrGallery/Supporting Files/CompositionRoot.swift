@@ -14,10 +14,6 @@ import RxSwift
 import Swinject
 import SwinjectStoryboard
 
-struct GalleryVCLazyHolder {
-    let galleryVC: Lazy<GalleryVC>
-}
-
 extension SwinjectStoryboard {
     @objc class func setup() {
         defaultContainer.register(NetworkStatusService.self) { _ in
@@ -61,15 +57,11 @@ extension SwinjectStoryboard {
             
             ret.reactor = container.resolve(GalleryReactor.self)
             return ret
-        }
-        
-        defaultContainer.register(GalleryVCLazyHolder.self) {
-            return .init(galleryVC: $0.resolve(Lazy<GalleryVC>.self)!)
-        }
-        
+        }.inObjectScope(.transient)
+ 
         defaultContainer.storyboardInitCompleted(TicketOfficeVC.self) { container, resolver in
             resolver.reactor = container.resolve(TicketOfficeReactor.self)
-            resolver.lazyGalleryVC = container.resolve(GalleryVCLazyHolder.self)
+            resolver.galleryVC = container.resolve(GalleryVC.self)
         }
     }
 }

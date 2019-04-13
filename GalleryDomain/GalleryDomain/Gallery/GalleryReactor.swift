@@ -23,10 +23,12 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
     private let imageStream = BehaviorSubject<GalleyImage?>(value: nil)
     private let feedBuffer: SynchronizedArray<URL> = .init()
     private let downloadService: FileDownloadService
+    private let feedService: GalleryFeedService
     private let logger: LogService
     
     private var firstImageScheduler: Observable<Int> = .empty()
     private var timerDisposable: Disposable?
+    private var feedsDisposable: Disposable?
     private var disposeBag = DisposeBag()
     
     public init(globalStream: GlobalStreamService,
@@ -34,13 +36,14 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
                 feedService: GalleryFeedService,
                 logger: LogService) {
         self.downloadService = downloadService
+        self.feedService = feedService
         self.logger = logger
         initialState = State.initialState
-        observeFeeds(feedService)
         setUpScheduler()
         setUpViewingTimeStream(globalStream,
                                itemId: GalleryReactor.streamId,
                                initialViewingTime: initialState.viewingTime)
+        
     }
     
     public struct State {
@@ -52,8 +55,8 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
     
     public enum Action {
         case exchangeTickets(with: ViewingTime)
-        case apperScreen
-        case disApperScreen
+        case appearScreen
+        case disAppearScreen
     }
     
     public enum Mutation {
@@ -79,9 +82,11 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
                 .just(.propagateViewingTime),
                 .just(.applyViewingTime)
                 ])
-        case .apperScreen:
+        case .appearScreen:
+            doAppearAction()
             return .empty()
-        case .disApperScreen:
+        case .disAppearScreen:
+            doDisAppearAction()
             return .empty()
         }
     }
@@ -111,8 +116,17 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
 }
 
 fileprivate extension GalleryReactor {
+    private func doAppearAction() {
+        observeFeeds(self.feedService)
+    }
+    
+    private func doDisAppearAction() {
+        feedsDisposable?.dispose()
+        feedBuffer.removeAll()
+    }
+    
     private func observeFeeds(_ feedService: GalleryFeedService) {
-        return feedService.observeFeeds(refreshInterval: GalleryReactor.feedRefreshInterval)
+        feedsDisposable = feedService.observeFeeds(refreshInterval: GalleryReactor.feedRefreshInterval)
             .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .map { URL(string: $0.imageUrl)! }
             .subscribe(onNext: { [weak self] url in
@@ -122,7 +136,6 @@ fileprivate extension GalleryReactor {
                 guard let `self` = self else { return }
                 self.logger.log(error)
             })
-            .disposed(by: disposeBag)
     }
     
     private func setUpScheduler() {
