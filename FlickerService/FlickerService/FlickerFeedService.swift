@@ -17,6 +17,9 @@ import ObjectMapper
 public typealias HTTPHeaders = [String: String]
 
 public class FlickerFeedService: GalleryFeedService {
+    private static let timeOut = 5
+    private static let retryCnt = 5
+    
     private static let flickerFeedUrl = URL(string: "https://api.flickr.com/services/feeds/photos_public.gne")!
     private static let parm: Parameters = [
         "tags": "landscape,portrait",
@@ -52,6 +55,7 @@ public class FlickerFeedService: GalleryFeedService {
             .interval(refreshInterval,
                       scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
             .startWith(0)
+        
         return timer.withLatestFrom(lastModifiedSubject)
             .concatMap(requestFeeds)
     }
@@ -65,8 +69,9 @@ public class FlickerFeedService: GalleryFeedService {
             .request(.get, FlickerFeedService.flickerFeedUrl,
                      parameters: FlickerFeedService.parm,
                      encoding: URLEncoding(destination: .queryString), headers: headers)
+            .timeout(.init(FlickerFeedService.timeOut), scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
+            .retry(FlickerFeedService.retryCnt)
             .responseString()
-            .filter { (response, _) -> Bool in response.statusCode == 200 }
             .catchError(Observable.error)
             .map { (response, result) -> String in
                 self.updateIMS(response)

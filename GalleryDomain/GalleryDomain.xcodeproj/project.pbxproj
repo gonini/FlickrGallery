@@ -14,6 +14,8 @@
 		99842F272250AF2C006C7D9F /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F262250AF2C006C7D9F /* String+Date.swift */; };
 		99842F292250E3B1006C7D9F /* SynchronizedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F282250E3B1006C7D9F /* SynchronizedArray.swift */; };
 		99842F422251EDF4006C7D9F /* FileDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99842F412251EDF4006C7D9F /* FileDownloadService.swift */; };
+		998A49E62261CFCD00BE73C8 /* FeedBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998A49E52261CFCD00BE73C8 /* FeedBuffer.swift */; };
+		998A49E8226495EE00BE73C8 /* UrlSelectionStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998A49E7226495EE00BE73C8 /* UrlSelectionStrategy.swift */; };
 		9992C904225272A100461E8C /* ViewingTimeStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9992C903225272A100461E8C /* ViewingTimeStream.swift */; };
 		9992C90622535A9800461E8C /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9992C90522535A9800461E8C /* LogService.swift */; };
 		999413ED225253FA005BBB00 /* GlobalStreamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999413EC225253FA005BBB00 /* GlobalStreamService.swift */; };
@@ -41,6 +43,8 @@
 		99842F262250AF2C006C7D9F /* String+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Date.swift"; sourceTree = "<group>"; };
 		99842F282250E3B1006C7D9F /* SynchronizedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedArray.swift; sourceTree = "<group>"; };
 		99842F412251EDF4006C7D9F /* FileDownloadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDownloadService.swift; sourceTree = "<group>"; };
+		998A49E52261CFCD00BE73C8 /* FeedBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBuffer.swift; sourceTree = "<group>"; };
+		998A49E7226495EE00BE73C8 /* UrlSelectionStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlSelectionStrategy.swift; sourceTree = "<group>"; };
 		9992C903225272A100461E8C /* ViewingTimeStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewingTimeStream.swift; sourceTree = "<group>"; };
 		9992C90522535A9800461E8C /* LogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogService.swift; sourceTree = "<group>"; };
 		999413EC225253FA005BBB00 /* GlobalStreamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalStreamService.swift; sourceTree = "<group>"; };
@@ -92,6 +96,8 @@
 			isa = PBXGroup;
 			children = (
 				99842F1B224DD398006C7D9F /* GalleryReactor.swift */,
+				998A49E52261CFCD00BE73C8 /* FeedBuffer.swift */,
+				998A49E7226495EE00BE73C8 /* UrlSelectionStrategy.swift */,
 			);
 			path = Gallery;
 			sourceTree = "<group>";
@@ -261,6 +267,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				998A49E62261CFCD00BE73C8 /* FeedBuffer.swift in Sources */,
+				998A49E8226495EE00BE73C8 /* UrlSelectionStrategy.swift in Sources */,
 				9992C90622535A9800461E8C /* LogService.swift in Sources */,
 				99842F272250AF2C006C7D9F /* String+Date.swift in Sources */,
 				9992C904225272A100461E8C /* ViewingTimeStream.swift in Sources */,

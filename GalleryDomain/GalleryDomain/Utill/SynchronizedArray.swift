@@ -48,14 +48,6 @@ public extension SynchronizedArray {
 }
 
 public extension SynchronizedArray {
-    func first(where predicate: (Element) -> Bool) -> Element? {
-        var result: Element?
-        queue.sync { result = self.array.first(where: predicate) }
-        return result
-    }
-}
-
-public extension SynchronizedArray {
     func append(_ element: Element) {
         queue.async(flags: .barrier) {
             self.array.append(element)
@@ -73,6 +65,23 @@ public extension SynchronizedArray {
     func removeAll() {
         queue.async(flags: .barrier) {
             self.array.removeAll()
+        }
+    }
+}
+
+public extension SynchronizedArray {
+    public subscript(index: Int) -> Element {
+        set {
+            queue.async(flags: .barrier) {
+                self.array[index] = newValue
+            }
+        }
+        get {
+            var element: Element!
+            queue.sync {
+                element = self.array[index]
+            }
+            return element
         }
     }
 }

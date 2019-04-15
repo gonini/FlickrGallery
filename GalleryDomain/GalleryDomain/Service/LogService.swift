@@ -24,7 +24,7 @@ public enum LogLevel {
 }
 
 public struct BasicLogger: LogService {
-    private static let galleryDomainLog = OSLog(subsystem: "com.gallery_domain", category: "gonigono")
+    private static let galleryDomainLog = OSLog(subsystem: "com.gallery_domain", category: "gallery domain error")
     
     public init() { }
     

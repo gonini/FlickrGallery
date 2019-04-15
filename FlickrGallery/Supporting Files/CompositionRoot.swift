@@ -16,6 +16,8 @@ import SwinjectStoryboard
 
 extension SwinjectStoryboard {
     @objc class func setup() {
+        Container.loggingFunction = nil
+        
         defaultContainer.register(NetworkStatusService.self) { _ in
             return ReachabilityService()
         }

@@ -19,19 +19,23 @@ final class GalleryVC: UIViewController, StoryboardView, ViewingTimeSlider {
     @IBOutlet var viewingTimeLabel: UILabel!
     @IBOutlet var artImageView: UIImageView!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
     func bind(reactor: GalleryReactor) {
+      
         rx.viewDidAppear
-            .map { _ in Reactor.Action.appearScreen }
+            .map { _ in Reactor.Action.willAppearScreen }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+    
+        rx.viewWillDisappear
+            .map { _ in Reactor.Action.willDisAppearScreen }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         rx.viewDidDisappear
-            .map { _ in Reactor.Action.disAppearScreen }
-            .bind(to: reactor.action)
+            .subscribe(onNext: { [unowned self] _ in
+                self.artImageView.image = nil
+                self.loadViewIfNeeded()
+            })
             .disposed(by: disposeBag)
         
         reactor.state.map { $0.galleyImage }
@@ -55,7 +59,7 @@ final class GalleryVC: UIViewController, StoryboardView, ViewingTimeSlider {
         
         let viewingTime = viewingTimeSlider.rx
             .timeValue
-            .debounce(0.5, scheduler: MainScheduler.instance)
+            .debounce(0.2, scheduler: MainScheduler.instance)
             .skip(1)
         
         propagetedViewingTime
