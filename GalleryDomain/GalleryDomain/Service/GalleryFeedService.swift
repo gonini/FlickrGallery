@@ -33,6 +33,7 @@ public class FeedItem: Mappable {
         imageUrl = media.url
         publishedDate = publishedText.toFlickerFormatDate()
     }
+    
 }
 
 public class Media: Mappable {

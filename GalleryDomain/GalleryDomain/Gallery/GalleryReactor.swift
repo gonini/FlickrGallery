@@ -137,15 +137,16 @@ fileprivate extension GalleryReactor {
     
     private func observeFeeds(_ feedService: GalleryFeedService) {
         feedsDisposable = feedService.observeFeeds(refreshInterval: GalleryReactor.feedRefreshInterval)
+            .catchError({ error -> Observable<FeedItem> in
+                self.logger.log(error)
+                return Observable.empty()
+            })
             .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .map { URL(string: $0.imageUrl)! }
             .subscribe(onNext: { [weak self] url in
                 guard let `self` = self else { return }
                 self.feedBuffer.append(url)
-            }, onError: { [weak self] error in
-                guard let `self` = self else { return }
-                self.logger.log(error)
-            })
+                })
     }
 
     private func propagatedTime() -> Observable<Mutation> {
@@ -163,9 +164,11 @@ fileprivate extension GalleryReactor {
     }
     
     private func applyViewingTime(_ with: TimeInterval, anmtnTime: TimeInterval) {
+        let animationTime = RxTimeInterval(anmtnTime)
+        
         timerDisposable?.dispose()
         let userScheduling =
-            Observable<Int>.interval(with + anmtnTime,
+            Observable<Int>.interval(with,
                                      scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
         
         let firstImageScheduler = Observable<Int>
@@ -173,18 +176,18 @@ fileprivate extension GalleryReactor {
             .take(1)
         
         timerDisposable = Observable.merge(userScheduling, firstImageScheduler)
-            .map { [weak self] _ in
-                guard let `self` = self else { return nil }
-                return self.feedBuffer.currentFeed
-            }
+            .map { _ in self.feedBuffer.currentFeed }
             .flatMap { Observable.from(optional: $0) }
-            .flatMap(downloadService.load)
+            .flatMap { url in
+                return self.downloadService.load(url: url)
+                    .delay(animationTime,
+                           scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
+            }
             .map { GalleyImage(image: $0, imswpAnmtnTime: anmtnTime) }
             .subscribe(onNext: { [weak self] in
                 guard let `self` = self else { return }
                 self.imageStream.onNext($0)
-                }, onError: { [weak self] error in
-                    guard let `self` = self else { return }
+                }, onError: {error in
                     self.logger.log(error, "이미지 다운로드 실패")
             })
     }
