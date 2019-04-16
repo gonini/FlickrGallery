@@ -143,6 +143,7 @@ fileprivate extension GalleryReactor {
             })
             .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .map { URL(string: $0.imageUrl)! }
+            .debug()
             .subscribe(onNext: { [weak self] url in
                 guard let `self` = self else { return }
                 self.feedBuffer.append(url)

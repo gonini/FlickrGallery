@@ -30,20 +30,17 @@ public class FlickerFeedService: GalleryFeedService {
     
     private var lastPublishedDateStream: BehaviorSubject<Date>!
     private var lastModifiedSubject: BehaviorSubject<String>!
-    private var feedsSubject: BehaviorSubject<[FeedItem]>!
     
     public init() { }
     
     public func observeFeeds(refreshInterval: TimeInterval) -> Observable<FeedItem> {
         self.lastPublishedDateStream = .init(value: .init(timeIntervalSince1970: 0))
         self.lastModifiedSubject = .init(value: "")
-        self.feedsSubject = .init(value: [])
-        pollFeedsRepeatedly(refreshInterval)
-        return observeOnlyNewFeeds().debug()
+        return observeOnlyNewFeeds(refreshInterval)
     }
     
-    private func observeOnlyNewFeeds() -> Observable<FeedItem> {
-        return feedsSubject
+    private func observeOnlyNewFeeds(_ refreshInterval: RxTimeInterval) -> Observable<FeedItem> {
+        return pollFeedsRepeatedly(refreshInterval)
             .filter { !$0.isEmpty }
             .withLatestFrom(lastPublishedDateStream) { (feeds, lastPublishedDate) -> [FeedItem] in
                 feeds.filter { $0.publishedDate > lastPublishedDate }
@@ -54,21 +51,21 @@ public class FlickerFeedService: GalleryFeedService {
             .concatMap({ Observable.from($0) })
     }
     
-    private func pollFeedsRepeatedly(_ refreshInterval: RxTimeInterval) {
-        _ = Observable<Int>
+    private func pollFeedsRepeatedly(_ refreshInterval: RxTimeInterval) -> Observable<[FeedItem]> {
+        return Observable<Int>
             .interval(refreshInterval,
                       scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
             .startWith(0)
             .withLatestFrom(lastModifiedSubject) { $1 }
-            .subscribe(onNext: requestFeeds)
+            .concatMap(requestFeeds)
     }
     
-    private func requestFeeds(_ lastModifiedDate: String) {
+    private func requestFeeds(_ lastModifiedDate: String) -> Observable<[FeedItem]> {
         let headers: HTTPHeaders = [
             HTTPHeader.ifModifiedSince: lastModifiedDate
         ]
         
-        _ = RxAlamofire
+        return RxAlamofire
             .request(.get, FlickerFeedService.flickerFeedUrl,
                      parameters: FlickerFeedService.parm,
                      encoding: URLEncoding(destination: .queryString), headers: headers)
@@ -96,8 +93,6 @@ public class FlickerFeedService: GalleryFeedService {
             }
             // 임시 처리
             .catchErrorJustReturn([])
-            .subscribe(onNext: feedsSubject.onNext,
-                       onError: feedsSubject.onError)
     }
     
     private func updateIMS(_ response: HTTPURLResponse) {
