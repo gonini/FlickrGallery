@@ -86,7 +86,10 @@ final public class GalleryReactor: Reactor, ViewingTimeStream {
                 .just(.applyViewingTime)
                 ])
         case .willAppearScreen:
-            return .just(.observeFeeds)
+            return .concat([
+                .just(.observeFeeds),
+                .just(.applyViewingTime)
+                ])
         case .willDisAppearScreen:
             return .just(.clearFeeds)
         default:
